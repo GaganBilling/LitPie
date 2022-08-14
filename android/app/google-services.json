@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "657418679887",
+    "firebase_url": "https://litpie-a2b7c-default-rtdb.firebaseio.com",
+    "project_id": "litpie-a2b7c",
+    "storage_bucket": "litpie-a2b7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657418679887:android:96d212bafd8e6a034adc3a",
+        "android_client_info": {
+          "package_name": "com.official.litpie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657418679887-00gevp9ueee985dmijdip830d200f8et.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.official.litpie",
+            "certificate_hash": "af4d524627c31bac4727b2b1a44510b2c3e0d014"
+          }
+        },
+        {
+          "client_id": "657418679887-mj10tbso8qdk32v4pr5te46aqgme834t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.official.litpie",
+            "certificate_hash": "79bca54bbcd92480d085062b769254c9b7419d5d"
+          }
+        },
+        {
+          "client_id": "657418679887-pe5666cpjcc4jcmn9063d3l72vitrcdi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.official.litpie",
+            "certificate_hash": "57b53b6c8e06733b74e074921da53fdf0380d6ce"
+          }
+        },
+        {
+          "client_id": "657418679887-i2auc5goskjutaj4s6es0pltgjgh26hd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvJXyWNvorNgd3HshHt0Xc6nBiHw3tYL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657418679887-i2auc5goskjutaj4s6es0pltgjgh26hd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "657418679887-upm968jmh4n6u0650mb9oqls8a5a6mdb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.official.litpie"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
