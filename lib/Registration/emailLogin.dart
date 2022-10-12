@@ -37,8 +37,10 @@ class _EmailLoginState extends State<EmailLogin> {
   void initState() {
     // TODO: implement initState
   if(kDebugMode){
-    _emailController.text="dhillon@yopmail.com";
-    _passwordController.text="Qwerty1!";
+    // _emailController.text="dhillon@yopmail.com";
+    // _passwordController.text="Qwerty1!";
+     _emailController.text="ss13@gmail.com";
+     _passwordController.text="Abc12345";
   }
     super.initState();
   }

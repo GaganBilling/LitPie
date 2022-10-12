@@ -328,7 +328,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       setState(() {
         isLocation = true;
       });
-      _updateLocationdata();
+      await _updateLocationdata();
     }
   }
 
@@ -347,7 +347,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (currentLocation == null) {
         setState(() {
           isLocation = false;
-          //TurnLocationOn();
+         // TurnLocationOn();
         });
       } else {
         if (mounted)
@@ -399,8 +399,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     try {
       Map<String, dynamic> obj = {};
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks[0];
+          await placemarkFromCoordinates(position.latitude, position.longitude,localeIdentifier: "en");
+      Placemark place;
+      if(placemarks != null) {
+        place = placemarks[0];
+      }
       String currentAddress =
           "${place.locality ?? ''}, ${place.country ?? ''}.";
 
@@ -411,7 +414,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
       return obj;
     } catch (aa) {
-      print("Allow location $aa");
+      print("Allow location4 $aa");
     }
   }
 

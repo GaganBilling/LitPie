@@ -84,7 +84,7 @@ class _ProfilePicScreenState extends State<ProfilePicScreen> {
         backgroundColor: mRed,
         actions: [
           Tooltip(
-            message: "Update".tr(),
+            message: "Update Pic".tr(),
             preferBelow: false,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,

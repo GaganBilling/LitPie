@@ -3,9 +3,7 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:litpie/Screens/BottomNavigation/Home/swipe/common/common_swipe_widget.dart';
@@ -36,8 +34,7 @@ class SwipeScreen extends StatefulWidget {
   _SwipeScreenState createState() => _SwipeScreenState();
 }
 
-class _SwipeScreenState extends State<SwipeScreen>
-    with AutomaticKeepAliveClientMixin {
+class _SwipeScreenState extends State<SwipeScreen> {
   ThemeProvider themeProvider;
   SwipeProvider swipeProvider;
 
@@ -46,6 +43,7 @@ class _SwipeScreenState extends State<SwipeScreen>
     themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     swipeProvider = Provider.of<SwipeProvider>(context, listen: false);
     swipeProvider.exceedSwipes = swipeCount >= swipeProvider.freeSwipe;
+
 
     super.initState();
   }
@@ -58,6 +56,9 @@ class _SwipeScreenState extends State<SwipeScreen>
 
   @override
   Widget build(BuildContext context) {
+    swipeProvider = Provider.of<SwipeProvider>(context);
+    print("inside swipe screen - "+ swipeProvider.swipeCardModelList.length.toString());
+
     swipeProvider.screenWidth = MediaQuery.of(context).size.width;
     return Consumer<SwipeProvider>(builder: (context, swipeProvider, child) {
       Future.delayed(Duration(seconds: 2), () {
@@ -336,7 +337,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                               size: 14,
                                                                               color: themeProvider.isDarkMode ? Colors.white : black,
                                                                             ),
-                                                                            Text(
+                                                                            swipeCard.createAccountData.distanceBW != null ? Text(
                                                                               swipeCard.createAccountData.distanceBW <= 5
                                                                                   ? " Less than 5 Km.".tr()
                                                                                   : swipeCard.createAccountData.distanceBW >= 1000
@@ -345,7 +346,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                               style: TextStyle(
                                                                                 fontSize: 14,
                                                                               ),
-                                                                            ),
+                                                                            ) : Text(""),
                                                                           ],
                                                                         ),
                                                                         Row(
@@ -826,9 +827,9 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                         (BuildContext
                                                                                 context,
                                                                             int index2) {
-                                                                      var video = swipeCard
-                                                                          .userVideosModel
-                                                                          .videos[index2];
+                                                                      // var video = swipeCard
+                                                                      //     .userVideosModel
+                                                                      //     .videos[index2];
                                                                       return InkWell(
                                                                         onTap:
                                                                             () {
@@ -1354,31 +1355,31 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                 .createAccountData
                                                                 .socioInfo
                                                                 .isNotEmpty &&
-                                                            swipeCard.createAccountData.socioInfo['fb'] !=
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['fb'] !=
                                                                 null &&
                                                             swipeCard.createAccountData.socioInfo['fb']
                                                                 .toString()
                                                                 .isNotEmpty ||
-                                                        swipeCard.createAccountData.socioInfo['insta'] != null &&
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['insta'] != null &&
                                                             swipeCard.createAccountData.socioInfo['insta']
                                                                 .toString()
                                                                 .isNotEmpty ||
-                                                        swipeCard.createAccountData.socioInfo['snap'] != null &&
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['snap'] != null &&
                                                             swipeCard.createAccountData.socioInfo['snap']
                                                                 .toString()
                                                                 .isNotEmpty ||
-                                                        swipeCard.createAccountData.socioInfo['twitter'] != null &&
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['twitter'] != null &&
                                                             swipeCard.createAccountData.socioInfo['twitter']
                                                                 .toString()
                                                                 .isNotEmpty ||
-                                                        swipeCard.createAccountData.socioInfo['tiktok'] != null &&
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['tiktok'] != null &&
                                                             swipeCard
                                                                 .createAccountData
                                                                 .socioInfo['tiktok']
                                                                 .toString()
                                                                 .isNotEmpty ||
-                                                        swipeCard.createAccountData.socioInfo['website'] != null && swipeCard.createAccountData.socioInfo['website'].toString().isNotEmpty ||
-                                                        swipeCard.createAccountData.socioInfo['youtube'] != null && swipeCard.createAccountData.socioInfo['youtube'].toString().isNotEmpty,
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['website'] != null && swipeCard.createAccountData.socioInfo['website'].toString().isNotEmpty ||
+                                                        swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['youtube'] != null && swipeCard.createAccountData.socioInfo['youtube'].toString().isNotEmpty,
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.only(
@@ -1427,7 +1428,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                             Wrap(
                                                               children: [
                                                                 Visibility(
-                                                                  visible: swipeCard
+                                                                  visible: swipeCard.createAccountData.socioInfo != null && swipeCard
                                                                           .createAccountData
                                                                           .socioInfo['snap'] !=
                                                                       null,
@@ -1441,7 +1442,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                   }),
                                                                 ),
                                                                 Visibility(
-                                                                  visible: swipeCard
+                                                                  visible: swipeCard.createAccountData.socioInfo != null && swipeCard
                                                                           .createAccountData
                                                                           .socioInfo['fb'] !=
                                                                       null,
@@ -1456,7 +1457,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                 ),
                                                                 Visibility(
                                                                     visible:
-                                                                        swipeCard.createAccountData.socioInfo['tiktok'] !=
+                                                                    swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['tiktok'] !=
                                                                             null,
                                                                     child: CommonSwipeWidget()
                                                                         .getSocialLinkWidget(
@@ -1468,7 +1469,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                     })),
                                                                 Visibility(
                                                                     visible:
-                                                                        swipeCard.createAccountData.socioInfo['insta'] !=
+                                                                    swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['insta'] !=
                                                                             null,
                                                                     child: CommonSwipeWidget()
                                                                         .getSocialLinkWidget(
@@ -1480,7 +1481,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                     })),
                                                                 Visibility(
                                                                     visible:
-                                                                        swipeCard.createAccountData.socioInfo['youtube'] !=
+                                                                    swipeCard.createAccountData.socioInfo != null &&  swipeCard.createAccountData.socioInfo['youtube'] !=
                                                                             null,
                                                                     child: CommonSwipeWidget()
                                                                         .getSocialLinkWidget(
@@ -1492,7 +1493,7 @@ class _SwipeScreenState extends State<SwipeScreen>
                                                                     })),
                                                                 Visibility(
                                                                     visible:
-                                                                        swipeCard.createAccountData.socioInfo['twitter'] !=
+                                                                    swipeCard.createAccountData.socioInfo != null && swipeCard.createAccountData.socioInfo['twitter'] !=
                                                                             null,
                                                                     child: CommonSwipeWidget()
                                                                         .getSocialLinkWidget(
@@ -1879,6 +1880,5 @@ class _SwipeScreenState extends State<SwipeScreen>
     return await cache.play("tone/tone.mp3");
   }
 
-  @override
   bool get wantKeepAlive => true;
 }

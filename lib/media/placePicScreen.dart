@@ -9,6 +9,7 @@ import 'package:litpie/Theme/colors.dart';
 import 'package:litpie/Theme/theme_provider.dart';
 import 'package:litpie/media/updatePlanPlacePic.dart';
 import 'package:litpie/models/createAccountData.dart';
+import 'package:litpie/provider/global_posts/provider/globalPostProvider.dart';
 import 'package:litpie/widgets/LinearProgressBar.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -226,7 +227,7 @@ class _PlanplacepicPicScreen extends State<PlanplacepicPicScreen> {
                                                     : 80,
                                               ),
                                               child: Text(
-                                                "Update".tr(),
+                                                "Update 3".tr(),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
@@ -297,7 +298,7 @@ class _PlanplacepicPicScreen extends State<PlanplacepicPicScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Tooltip(
-                                    message: "Update".tr(),
+                                    message: "Update 2".tr(),
                                     preferBelow: false,
                                     child: InkWell(
                                       onTap: () {

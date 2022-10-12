@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:litpie/provider/global_posts/provider/globalPostProvider.dart';
 import 'package:path/path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,6 +26,7 @@ class UpdatePlanPlacePic extends StatefulWidget {
 
 class _UpdatePlanPlacePic extends State<UpdatePlanPlacePic>
     with SingleTickerProviderStateMixin {
+
   bool uploading = false;
   final _stoarge = FirebaseStorage.instance;
   final auth = FirebaseAuth.instance;
@@ -46,6 +48,8 @@ class _UpdatePlanPlacePic extends State<UpdatePlanPlacePic>
 
   @override
   Widget build(BuildContext context) {
+    var globalPostProvider =
+    Provider.of<GlobalPostProvider>(context, listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       extendBodyBehindAppBar: false,
@@ -78,7 +82,7 @@ class _UpdatePlanPlacePic extends State<UpdatePlanPlacePic>
                         setState(() {
                           uploading = true;
                         });
-                        _uploadImages().whenComplete(() {
+                        _uploadImages(globalPostProvider).whenComplete(() {
                           // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNav()));
                           setState(() {
                             print("Refresh");
@@ -281,7 +285,8 @@ class _UpdatePlanPlacePic extends State<UpdatePlanPlacePic>
     }
   }
 
-  _uploadImages() async {
+  _uploadImages(GlobalPostProvider globalPostProvider) async {
+
     if (_image != null) {
       var _ref = _stoarge
           .ref()
@@ -289,9 +294,14 @@ class _UpdatePlanPlacePic extends State<UpdatePlanPlacePic>
           .child("planplacepic/" + basename(_image.path));
       await _ref.putFile(_image);
       String url = await _ref.getDownloadURL();
-
+      setState(() {
+        globalPostProvider.planPicData = url;
+      });
       print(url);
-      urls = url;
+      setState((){
+        urls = url;
+      });
+
       print(url);
     }
     print("uploading:" + urls);

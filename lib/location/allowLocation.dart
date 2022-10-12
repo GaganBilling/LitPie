@@ -84,7 +84,7 @@ class AllowLocationState extends State<AllowLocation> {
                       padding: const EdgeInsets.only(top: 0),
                       child: RichText(
                         text: TextSpan(
-                          text: "Enable Location".tr(),
+                          text: "Enable Location1".tr(),
                           style: TextStyle(
                               color: mRed,
                               fontSize:
@@ -111,7 +111,7 @@ class AllowLocationState extends State<AllowLocation> {
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 10.0),
                       child: ElevatedButton(
-                          child: Text("Allow Location".tr(),
+                          child: Text("Allow Location3".tr(),
                               style: TextStyle(
                                   fontSize:
                                       _screenWidth >= miniScreenWidth ? 22 : 18,
@@ -225,9 +225,10 @@ Future<Map> getLocationCoordinates() async {
     });
     var coordinates;
     try {
-      //coordinates = await location.getLocation();
-      coordinates = await await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      coordinates = await location.getLocation();
+      print("coordinates - : $coordinates");
+      //coordinates = await Geolocator.getCurrentPosition(
+      //    desiredAccuracy: LocationAccuracy.high);
     } catch (e) {
       print("Error: $e");
     }
@@ -273,9 +274,12 @@ Future getCurrentLocation({latitude, longitude}) async {
       desiredAccuracy: LocationAccuracy.high);
   try {
     Map<String, dynamic> obj = {};
-    List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark place = placemarks[0];
+    List<Placemark> placemarks = await placemarkFromCoordinates(11.341036, 77.717163,localeIdentifier: "en");
+    Placemark place;
+    if(placemarks != null) {
+      place = placemarks[0];
+    }
+
     String currentAddress = "${place.locality ?? ''}, ${place.country ?? ''}.";
 
     print(currentAddress);
@@ -283,9 +287,9 @@ Future getCurrentLocation({latitude, longitude}) async {
     obj['latitude'] = position.latitude;
     obj['longitude'] = position.longitude;
 
-//     return obj;
+    return obj;
   } catch (aa) {
-    print("Allow location $aa");
+    print("Allow location1 $aa");
   }
 }
 

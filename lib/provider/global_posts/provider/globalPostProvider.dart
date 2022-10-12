@@ -21,7 +21,7 @@ import 'package:http/http.dart' as http;
 class GlobalPostProvider extends ChangeNotifier {
   FirebaseController firebaseController = FirebaseController();
   CreateAccountData userData;
-
+  String planPicData;
   //globalPollScreenData
   bool hasMore = true;
   bool isLoading = false;

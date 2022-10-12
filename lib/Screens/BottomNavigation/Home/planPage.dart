@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:litpie/Screens/UnKnownInformation.dart';
 import 'package:litpie/Screens/reportUser.dart';
 import 'package:litpie/Theme/colors.dart';
@@ -793,18 +795,48 @@ class _PlanPageState extends State<PlanPage>
                                                       return buildRequestButton(
                                                           title: "Send Interest"
                                                               .tr(),
-                                                          onTap: () {
+                                                          onTap: () async {
                                                             HapticFeedback
                                                                 .heavyImpact();
                                                             widget
                                                                 .sendRequestData(
-                                                              widget.index,
-                                                              pdata,
-                                                            );
+                                                                widget.index,
+                                                                pdata);
                                                           });
                                                     }
                                                   } else {
-                                                    return buildRequestButton(
+                                                    print(widget.currentUser.uid);
+                                                    print(FirebaseAuth.instance.currentUser.uid);
+                                                    return (FirebaseAuth.instance.currentUser.uid == pdata.uid) ?
+                                                    buildRequestButton(
+                                                        title: "Delete22"
+                                                            .tr(),
+                                                        onTap: () async {
+
+                                                          await docRef .where("pdataOwnerID", isEqualTo: pdata.uid).get()
+                                                              .then((value) async {
+                                                            print(value.docs[0]['planId']);
+                                                            await docRef.doc(value.docs[0]['planId']).delete().then((value) => {
+
+                                                              Fluttertoast.showToast(
+                                                                  msg: "Plan Deleted!!".tr(),
+                                                                  toastLength: Toast.LENGTH_SHORT,
+                                                                  gravity: ToastGravity.BOTTOM,
+                                                                  timeInSecForIosWeb: 3,
+                                                                  backgroundColor: Colors.blueGrey,
+                                                                  textColor: Colors.white,
+                                                                  fontSize: 16.0),
+
+                                                              Navigator.pop(context)
+
+                                                            });
+
+                                                          });
+
+
+                                                        })
+                                                        :
+                                                     buildRequestButton(
                                                         title: "Send Interest"
                                                             .tr(),
                                                         onTap: () {

@@ -253,6 +253,7 @@ class _ExplorePlans extends State<ExplorePlans>
 
           CreateAccountData temp =
               CreateAccountData.fromDocument(querySnapshot.docs[i].data());
+          print("temp " + temp.coordinates['lattitude']);
           var distance = Constants()
               .calculateDistance(currentUser: currentUser, anotherUser: temp);
           temp.distanceBW = distance.round();

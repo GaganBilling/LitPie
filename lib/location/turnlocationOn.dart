@@ -20,7 +20,7 @@ class TurnLocationOn extends StatefulWidget {
 
 class _TurnLocationOn extends State<TurnLocationOn> {
   Location location = Location();
-
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   Map<String, dynamic> userData = {};
 
   Future setUserData(Map<String, dynamic> userData) async {
@@ -51,7 +51,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
             fontSize: 16.0);
         await pHandler.openAppSettings().then((v) {
           print("App Setting Closed");
-          Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => MyApp()));
+          Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
         });
       } else {
         print("turn on lacation1");
@@ -67,6 +67,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
     print("turn on lacation5");
     var currentLocation = await getLocationCoordinates();
     print("turn on lacation6");
+   // Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
     if (currentLocation == null) {
       await getLocationCoordinates();
     } else {
@@ -124,7 +125,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
                       padding: const EdgeInsets.only(top: 0),
                       child: RichText(
                         text: TextSpan(
-                          text: "Enable Location".tr(),
+                          text: "Enable Location2".tr(),
                           style: TextStyle(
                             color: mRed,
                             fontSize: _screenWidth >= miniScreenWidth ? 40 : 30,
@@ -148,9 +149,10 @@ class _TurnLocationOn extends State<TurnLocationOn> {
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 10.0),
                       child: ElevatedButton(
-                          child: Text("Allow Location".tr(), style: TextStyle(fontSize: _screenWidth >= miniScreenWidth ? 22 : 18, fontWeight: FontWeight.w600)),
-                          onPressed: () {
-                            _updateLocation();
+                          child: Text("Allow Location2".tr(), style: TextStyle(fontSize: _screenWidth >= miniScreenWidth ? 22 : 18, fontWeight: FontWeight.w600)),
+                          onPressed: () async {
+                           await _updateLocation();
+                          // Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
                           },
                           style: ElevatedButton.styleFrom(
                               primary: mRed,

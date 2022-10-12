@@ -79,13 +79,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    globalSwipeController = Provider.of<SwipeProvider>(context, listen: false);
     _tabController = TabController(
         vsync: this, length: 4, initialIndex: widget.homeRedirectIndex);
     _scrollViewController = ScrollController();
+    print("checking1");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      globalSwipeController = Provider.of<SwipeProvider>(context, listen: false);
+      print("checking data availablity");
 
-    var data = _getCurrentUser();
-    if (data != null) {}
+      var data = await _getCurrentUser();
+      if (data != null) {
+        print("data available");
+      }
+    });
+
   }
 
   @override
@@ -104,10 +111,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         //TurnLocationOn
         Navigator.of(context).pushReplacementNamed('/TurnLocationOn');
       } else {
-        _updateLocationData();
+        await _updateLocationData();
       }
     } else {
-      _updateLocationData();
+      await _updateLocationData();
     }
   }
 
@@ -132,6 +139,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Future<CreateAccountData> _getCurrentUser() async {
     User user = auth.currentUser;
 
+    print("inside current user");
     return docRef.doc(user.uid).get().then((data) async {
       currentUser = CreateAccountData.fromDocument(data.data());
       if (mounted) setState(() {});
@@ -145,9 +153,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   Future<AllStoriesModel> getInitialStories() async {
     try {
-      allStoriesModel = await StoriesApiController()
-          .getInitialStoriesWithPagination(currentUserId: currentUser.uid);
-      if (mounted) setState(() {});
+      setState(() async {
+        allStoriesModel = await StoriesApiController()
+            .getInitialStoriesWithPagination(currentUserId: currentUser.uid);
+        if (mounted) setState(() {});
+      });
+
       return allStoriesModel;
     } catch (e) {
       print("Story Load From Api Error: $e");
@@ -238,6 +249,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
           CreateAccountData temp =
               CreateAccountData.fromDocument(querySnapshot.docs[i].data());
+          print("temp2 " + temp.coordinates['lattitude']);
           var distance = Constants()
               .calculateDistance(currentUser: currentUser, anotherUser: temp);
           temp.distanceBW = distance.round();

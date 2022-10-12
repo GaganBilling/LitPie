@@ -70,7 +70,7 @@ class SwipeProvider extends ChangeNotifier {
   getCurrentUser() async {
     try {
       currentUserData = await firebaseController.currentUserData;
-      currentUser = await _firebaseController.firebaseAuth.currentUser;
+      currentUser = _firebaseController.firebaseAuth.currentUser;
     } catch (e) {
       print(e.toString());
     }
@@ -625,10 +625,11 @@ class SwipeProvider extends ChangeNotifier {
     } else {
       return _firebaseController.userColReference
           .where('editInfo.userGender', isEqualTo: currentUserData.showGender)
-          .where('age',
-              isGreaterThanOrEqualTo: currentUserData.ageRange['min'],
-              isLessThanOrEqualTo: currentUserData.ageRange['max'])
-          .orderBy('age', descending: false);
+          // .where('age',
+          //     isGreaterThanOrEqualTo: currentUserData.ageRange['min'],
+          //     isLessThanOrEqualTo: currentUserData.ageRange['max'])
+         // .orderBy('age', descending: false)
+      ;
     }
   }
 
@@ -643,7 +644,7 @@ class SwipeProvider extends ChangeNotifier {
   }
 
   Future<void> getInitialSwipeCard() async {
-    notifyListeners();
+   // notifyListeners();
     if (!hasMore) {
       print("No More Post");
       isFetching = false;
@@ -708,7 +709,7 @@ class SwipeProvider extends ChangeNotifier {
       notifyListeners();
 
       if (querySnapshot_likedUIDsUsersDetail.length > 0) {
-        await _getFinalUsersFromDocuments(querySnapshot_likedUIDsUsersDetail);
+       // await _getFinalUsersFromDocuments(querySnapshot_likedUIDsUsersDetail);
       }
     }
 
@@ -731,6 +732,8 @@ class SwipeProvider extends ChangeNotifier {
           hasMore = false;
           isFetching = false;
           notifyListeners();
+          print("_getFinalUsersFromDocuments1");
+          await _getFinalUsersFromDocuments(querySnapshot.docs);
           print("No More Swipe Load");
           notifyListeners();
           break;
@@ -739,6 +742,7 @@ class SwipeProvider extends ChangeNotifier {
           notifyListeners();
           //add to SwipeCardModelList -->
           //await
+          print("_getFinalUsersFromDocuments2");
           await _getFinalUsersFromDocuments(querySnapshot.docs);
           // print("Temp Users Length: ${tempUsers.length}");
         }
@@ -753,13 +757,21 @@ class SwipeProvider extends ChangeNotifier {
     swipeCardRemoved.clear();
     await Future.forEach(docs, (QueryDocumentSnapshot element) async {
       CreateAccountData temp = CreateAccountData.fromDocument(element.data());
-      var distance = Constants()
-          .calculateDistance(currentUser: currentUserData, anotherUser: temp);
-      temp.distanceBW = distance.round();
+
+
+      var distance;
+      if(temp.coordinates != null && temp.coordinates['lattitude'] != null) {
+        print("temp4 " + temp.coordinates['lattitude']);
+         distance = Constants()
+            .calculateDistance(currentUser: currentUserData, anotherUser: temp);
+        temp.distanceBW = distance.round();
+
+
+
+      }
       BlockedUserModel blockedUserModel = await BlockUserController()
           .blockedExistOrNot(
-              currentUserId: currentUserData.uid, anotherUserId: temp.uid);
-
+          currentUserId: currentUserData.uid, anotherUserId: temp.uid);
       await getCheckedValue(temp, distance, blockedUserModel);
     });
   }
@@ -768,14 +780,14 @@ class SwipeProvider extends ChangeNotifier {
       BlockedUserModel blockedUserModel) async {
     bool isChecked = await checkedUserOrNotBool(uid: temp.uid);
     if (isChecked) {
-      if (distance <= currentUserData.maxDistance &&
+      if (
           temp.uid != currentUserData.uid &&
           !temp.isBlocked &&
           !temp.isDeleted &&
           !temp.isHidden &&
           blockedUserModel == null) {
         temp.imageUrl.clear();
-        await swipeCardModelList.insert(
+         swipeCardModelList.insert(
             0,
             SwipeCardModel(
                 createAccountData: temp,

@@ -129,6 +129,7 @@ class _OnlineUsers extends State<OnlineUsers> with AutomaticKeepAliveClientMixin
       }
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         CreateAccountData temp = CreateAccountData.fromDocument(querySnapshot.docs[i].data());
+        print("temp3 " + temp.coordinates['lattitude']);
         var distance = Constants().calculateDistance(currentUser: currentUser, anotherUser: temp);
         temp.distanceBW = distance.round();
         if (distance <= currentUser.maxDistance &&

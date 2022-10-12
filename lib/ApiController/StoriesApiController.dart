@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -165,7 +164,10 @@ class StoriesApiController {
         } else {
           return false;
         }
+      } else {
+        return false;
       }
+
     } catch (e) {
       print("deleteError: $e");
       Fluttertoast.showToast(
@@ -176,6 +178,7 @@ class StoriesApiController {
           backgroundColor: Colors.blueGrey,
           textColor: Colors.white,
           fontSize: 16.0);
+      return false;
     }
   }
 }

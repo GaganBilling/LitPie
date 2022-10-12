@@ -51,14 +51,14 @@ class Constants {
     };
     if (FirebaseAuth.instance.currentUser != null && currentToken.isNotEmpty) {
       deleteDeviceTokenAfter30Day();
-      userCollRef
+     await userCollRef
           .doc(FirebaseAuth.instance.currentUser.uid)
           .collection(userDevicesCollectionName)
           .where("token", isEqualTo: currentToken)
           .get()
-          .then((oldToken) {
+          .then((oldToken) async {
         if (oldToken.docs.length <= 0) {
-          userCollRef
+          await  userCollRef
               .doc(FirebaseAuth.instance.currentUser.uid)
               .collection(userDevicesCollectionName)
               .add(tokenDetail);
@@ -70,7 +70,7 @@ class Constants {
             }
           });
           if (docId.isNotEmpty) {
-            userCollRef
+            await userCollRef
                 .doc(FirebaseAuth.instance.currentUser.uid)
                 .collection(userDevicesCollectionName)
                 .doc(docId)

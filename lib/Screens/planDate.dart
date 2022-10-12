@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:litpie/Screens/viewMyPlans.dart';
 import 'package:litpie/Theme/colors.dart';
 import 'package:litpie/Theme/theme_provider.dart';
 import 'package:litpie/controller/FirebaseController.dart';
 import 'package:litpie/media/placePicScreen.dart';
+import 'package:litpie/provider/global_posts/provider/globalPostProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -47,8 +49,8 @@ class _PlanDate extends State<PlanDate> {
 
   Future updatePlanData() async {
     isUploading = true;
-    setState(() {});
-    var ref = await FirebaseFirestore.instance.collection("Plans").doc();
+
+    var ref = FirebaseFirestore.instance.collection("Plans").doc();
 
     planData = {
       "pCity": _cityController.text,
@@ -67,7 +69,7 @@ class _PlanDate extends State<PlanDate> {
 
     ref.set(planData, SetOptions(merge: true)).then((value) {
       isUploading = false;
-      setState(() {});
+
       Fluttertoast.showToast(
           msg: "Plan updated!!".tr(),
           toastLength: Toast.LENGTH_SHORT,
@@ -78,7 +80,7 @@ class _PlanDate extends State<PlanDate> {
           fontSize: 16.0);
     }).catchError((e) {
       isUploading = false;
-      setState(() {});
+
       print("ERROR (Plan Update): $e");
     });
 
@@ -208,6 +210,8 @@ class _PlanDate extends State<PlanDate> {
           child: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
+            title: Text("Create Plan",style: TextStyle(color: mRed)),
+
             leading: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
@@ -222,21 +226,24 @@ class _PlanDate extends State<PlanDate> {
             ),
             actions: [
               Padding(
-                padding: const EdgeInsets.only(top: 10, right: 20),
+                padding: const EdgeInsets.only(top: 10, right: 10),
                 child: ElevatedButton(
                   child: isUploading
                       ? Center(child: CircularProgressIndicator())
                       : Text(
-                          "UPLOAD".tr(),
+                          "View My Plans".tr(),
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 12,
                           ),
                         ),
                   onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      await updatePlanData();
-                      Navigator.pop(context);
-                    }
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            ViewMyPlans(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                       primary: mRed,
@@ -448,14 +455,25 @@ class _PlanDate extends State<PlanDate> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        var globalPostProvider =
+                        Provider.of<GlobalPostProvider>(context, listen: false);
+
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     PlanplacepicPicScreen(uploadPic: (urls) {
-                                      planplacepic = urls;
-                                      setState(() {});
-                                    })));
+                                      print("skjdf "+urls);
+                                      setState(() {
+                                        planplacepic = urls;
+                                      });
+                                    })
+                            )).then((value) {
+                          print("ssfsdf "+globalPostProvider.planPicData);
+                          setState(() {
+                            planplacepic = globalPostProvider.planPicData;
+                          });
+                        });
                       },
                       child: SizedBox(
                         height: 80,
@@ -548,7 +566,7 @@ class _PlanDate extends State<PlanDate> {
                                         : Tooltip(
                                             preferBelow: false,
                                             message:
-                                                "Do you want to add Image for reference?"
+                                                "Do you want to add Image for reference"
                                                     .tr(),
                                             child: Container(
                                                 constraints: BoxConstraints(
@@ -558,7 +576,7 @@ class _PlanDate extends State<PlanDate> {
                                                       : 190,
                                                 ),
                                                 child: Text(
-                                                  "Do you want to add Image for reference?"
+                                                  "Do you want to add Image for reference"
                                                       .tr(),
                                                   maxLines: 1,
                                                   overflow:
@@ -602,147 +620,169 @@ class _PlanDate extends State<PlanDate> {
                     SizedBox(
                       height: 20.0,
                     ),
-                    (pTimeStamp != null)
-                        ? Tooltip(
-                            message: "Remove Plan".tr(),
-                            preferBelow: false,
-                            child: ElevatedButton(
-                              child: Text("Remove Plan".tr(),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold)),
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          backgroundColor:
-                                              themeProvider.isDarkMode
-                                                  ? black.withOpacity(.5)
-                                                  : white.withOpacity(.8),
-                                          content: Container(
-                                            // height: MediaQuery.of(context).size.height / 4,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  "This will remove all the data related to this plan, if any. \nAre You Sure?"
-                                                      .tr(),
-                                                  textAlign: TextAlign.center,
-                                                  style:
-                                                      TextStyle(fontSize: 16),
-                                                ),
-                                                SizedBox(
-                                                  height: 15,
-                                                ),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  margin: EdgeInsets.only(
-                                                      left: 30, right: 30),
-                                                  height: 50,
-                                                  child: ElevatedButton(
-                                                    onPressed: () async {
-                                                      removeOldPlan();
-                                                      Fluttertoast.showToast(
-                                                          msg: "Plan removed!!"
-                                                              .tr(),
-                                                          toastLength: Toast
-                                                              .LENGTH_SHORT,
-                                                          gravity: ToastGravity
-                                                              .BOTTOM,
-                                                          timeInSecForIosWeb: 3,
-                                                          backgroundColor:
-                                                              Colors.blueGrey,
-                                                          textColor:
-                                                              Colors.white,
-                                                          fontSize: 16.0);
-                                                      Navigator.pop(context);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      setState(() {});
-                                                    },
-                                                    child: Text(
-                                                      "YES".tr(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: 20),
-                                                    ),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      primary: mRed,
-                                                      onPrimary: white,
-                                                      // padding: EdgeInsets.fromLTRB(80.0, 15.0, 80.0, 10.0),
-                                                      elevation: 5,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.7)),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  margin: EdgeInsets.only(
-                                                      left: 30, right: 30),
-                                                  height: 50,
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: Text(
-                                                      "NO".tr(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: 20),
-                                                    ),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      primary: themeProvider
-                                                              .isDarkMode
-                                                          ? mBlack
-                                                          : white,
-                                                      onPrimary:
-                                                          Colors.blue[700],
-                                                      // padding: EdgeInsets.fromLTRB(80.0, 15.0, 80.0, 10.0),
-                                                      elevation: 5,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.7)),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: mRed,
-                                onPrimary: white,
-                                elevation: 3,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12.0, horizontal: 60.0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                              ),
-                            ),
-                          )
-                        : Container(),
+                    ElevatedButton(
+                      child: Text("Save plan".tr(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold)),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          await updatePlanData();
+                          Navigator.pop(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: mRed,
+                        onPrimary: white,
+                        elevation: 3,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 60.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                    ),
+                    // (pTimeStamp != null)
+                    //     ? Tooltip(
+                    //         message: "Remove Plan".tr(),
+                    //         preferBelow: false,
+                    //         child: ElevatedButton(
+                    //           child: Text("Remove Plan".tr(),
+                    //               overflow: TextOverflow.ellipsis,
+                    //               style: TextStyle(
+                    //                   fontSize: 22,
+                    //                   fontWeight: FontWeight.bold)),
+                    //           onPressed: () {
+                    //             showDialog(
+                    //                 context: context,
+                    //                 builder: (context) => AlertDialog(
+                    //                       backgroundColor:
+                    //                           themeProvider.isDarkMode
+                    //                               ? black.withOpacity(.5)
+                    //                               : white.withOpacity(.8),
+                    //                       content: Container(
+                    //                         // height: MediaQuery.of(context).size.height / 4,
+                    //                         child: Column(
+                    //                           mainAxisSize: MainAxisSize.min,
+                    //                           children: [
+                    //                             Text(
+                    //                               "This will remove all the data related to this plan, if any. \nAre You Sure?"
+                    //                                   .tr(),
+                    //                               textAlign: TextAlign.center,
+                    //                               style:
+                    //                                   TextStyle(fontSize: 16),
+                    //                             ),
+                    //                             SizedBox(
+                    //                               height: 15,
+                    //                             ),
+                    //                             Container(
+                    //                               width: MediaQuery.of(context)
+                    //                                   .size
+                    //                                   .width,
+                    //                               margin: EdgeInsets.only(
+                    //                                   left: 30, right: 30),
+                    //                               height: 50,
+                    //                               child: ElevatedButton(
+                    //                                 onPressed: () async {
+                    //                                   removeOldPlan();
+                    //                                   Fluttertoast.showToast(
+                    //                                       msg: "Plan removed!!"
+                    //                                           .tr(),
+                    //                                       toastLength: Toast
+                    //                                           .LENGTH_SHORT,
+                    //                                       gravity: ToastGravity
+                    //                                           .BOTTOM,
+                    //                                       timeInSecForIosWeb: 3,
+                    //                                       backgroundColor:
+                    //                                           Colors.blueGrey,
+                    //                                       textColor:
+                    //                                           Colors.white,
+                    //                                       fontSize: 16.0);
+                    //                                   Navigator.pop(context);
+                    //                                   Navigator.of(context)
+                    //                                       .pop();
+                    //                                   setState(() {});
+                    //                                 },
+                    //                                 child: Text(
+                    //                                   "YES".tr(),
+                    //                                   textAlign:
+                    //                                       TextAlign.center,
+                    //                                   style: TextStyle(
+                    //                                       fontSize: 20),
+                    //                                 ),
+                    //                                 style: ElevatedButton
+                    //                                     .styleFrom(
+                    //                                   primary: mRed,
+                    //                                   onPrimary: white,
+                    //                                   // padding: EdgeInsets.fromLTRB(80.0, 15.0, 80.0, 10.0),
+                    //                                   elevation: 5,
+                    //                                   shape:
+                    //                                       RoundedRectangleBorder(
+                    //                                           borderRadius:
+                    //                                               BorderRadius
+                    //                                                   .circular(
+                    //                                                       20.7)),
+                    //                                 ),
+                    //                               ),
+                    //                             ),
+                    //                             SizedBox(
+                    //                               height: 10,
+                    //                             ),
+                    //                             Container(
+                    //                               width: MediaQuery.of(context)
+                    //                                   .size
+                    //                                   .width,
+                    //                               margin: EdgeInsets.only(
+                    //                                   left: 30, right: 30),
+                    //                               height: 50,
+                    //                               child: ElevatedButton(
+                    //                                 onPressed: () {
+                    //                                   Navigator.of(context)
+                    //                                       .pop();
+                    //                                 },
+                    //                                 child: Text(
+                    //                                   "NO".tr(),
+                    //                                   textAlign:
+                    //                                       TextAlign.center,
+                    //                                   style: TextStyle(
+                    //                                       fontSize: 20),
+                    //                                 ),
+                    //                                 style: ElevatedButton
+                    //                                     .styleFrom(
+                    //                                   primary: themeProvider
+                    //                                           .isDarkMode
+                    //                                       ? mBlack
+                    //                                       : white,
+                    //                                   onPrimary:
+                    //                                       Colors.blue[700],
+                    //                                   // padding: EdgeInsets.fromLTRB(80.0, 15.0, 80.0, 10.0),
+                    //                                   elevation: 5,
+                    //                                   shape:
+                    //                                       RoundedRectangleBorder(
+                    //                                           borderRadius:
+                    //                                               BorderRadius
+                    //                                                   .circular(
+                    //                                                       20.7)),
+                    //                                 ),
+                    //                               ),
+                    //                             ),
+                    //                           ],
+                    //                         ),
+                    //                       ),
+                    //                     ));
+                    //           },
+                    //           style: ElevatedButton.styleFrom(
+                    //             primary: mRed,
+                    //             onPrimary: white,
+                    //             elevation: 3,
+                    //             padding: EdgeInsets.symmetric(
+                    //                 vertical: 12.0, horizontal: 60.0),
+                    //             shape: RoundedRectangleBorder(
+                    //                 borderRadius: BorderRadius.circular(20)),
+                    //           ),
+                    //         ),
+                    //       )
+                    //     : Container(),
                     SizedBox(
                       height: 30.0,
                     ),
