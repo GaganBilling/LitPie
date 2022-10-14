@@ -143,7 +143,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return docRef.doc(user.uid).get().then((data) async {
       currentUser = CreateAccountData.fromDocument(data.data());
       if (mounted) setState(() {});
-      getInitialStories();
+      //getInitialStories();
       getInitialPost();
 
       // configurePushNotification(currentUser);

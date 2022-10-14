@@ -61,7 +61,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
     swipeProvider.screenWidth = MediaQuery.of(context).size.width;
     return Consumer<SwipeProvider>(builder: (context, swipeProvider, child) {
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 0), () {
         if (!swipeProvider.isFetching) {
           if (swipeProvider.swipeCardModelList.length <= 0) {
             if (widget.parentTabController.index == 0 && mounted) {

@@ -274,7 +274,7 @@ Future getCurrentLocation({latitude, longitude}) async {
       desiredAccuracy: LocationAccuracy.high);
   try {
     Map<String, dynamic> obj = {};
-    List<Placemark> placemarks = await placemarkFromCoordinates(11.341036, 77.717163,localeIdentifier: "en");
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude,localeIdentifier: "en");
     Placemark place;
     if(placemarks != null) {
       place = placemarks[0];

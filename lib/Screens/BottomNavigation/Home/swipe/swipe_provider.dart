@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:litpie/ApiController/StoriesApiController.dart';
+//import 'package:litpie/ApiController/StoriesApiController.dart';
 import 'package:litpie/Screens/roseCollection.dart';
 import 'package:litpie/UploadMedia/UploadImages/upload_imagesFirebase.dart';
 import 'package:litpie/UploadMedia/UploadImages/uplopad_videosFirebase.dart';
@@ -678,7 +678,7 @@ class SwipeProvider extends ChangeNotifier {
 
         if (querySnapshot_likedUsersUID.docs.length <= 0) {
           likedByUsersHasMore = false;
-          notifyListeners();
+         // notifyListeners();
           break;
         } else {
           likedByUsersDocs.addAll(querySnapshot_likedUsersUID.docs);
@@ -704,7 +704,7 @@ class SwipeProvider extends ChangeNotifier {
           if (tempQuerySnapshot.docs.isNotEmpty)
             querySnapshot_likedUIDsUsersDetail.add(tempQuerySnapshot.docs[0]);
         }
-        notifyListeners();
+      //  notifyListeners();
       }
       notifyListeners();
 
@@ -719,13 +719,13 @@ class SwipeProvider extends ChangeNotifier {
       while (swipeCardModelList.length < initialDocLimit) {
         if (lastDocument == null) {
           querySnapshot = await query().limit(laterDocLimit).get();
-          notifyListeners();
+         // notifyListeners();
         } else {
           querySnapshot = await query()
               .limit(laterDocLimit)
               .startAfterDocument(lastDocument)
               .get();
-          notifyListeners();
+         // notifyListeners();
         }
 
         if (querySnapshot.docs.length < laterDocLimit) {
@@ -735,11 +735,11 @@ class SwipeProvider extends ChangeNotifier {
           print("_getFinalUsersFromDocuments1");
           await _getFinalUsersFromDocuments(querySnapshot.docs);
           print("No More Swipe Load");
-          notifyListeners();
+         // notifyListeners();
           break;
         } else {
           lastDocument = querySnapshot.docs[querySnapshot.docs.length - 1];
-          notifyListeners();
+         // notifyListeners();
           //add to SwipeCardModelList -->
           //await
           print("_getFinalUsersFromDocuments2");
@@ -813,37 +813,37 @@ class SwipeProvider extends ChangeNotifier {
           notifyListeners();
         });
 
-        await VideoController().getAllVideos(temp.uid).then((videos) {
-          List<Videos> lis = [];
-          if (videos.length > 0) {
-            videos.forEach((element) {
-              Videos video = Videos.fromJson(element);
-              lis.add(video);
-            });
-          }
-          userVideosModel.videos = lis;
-          notifyListeners();
-        }).whenComplete(() {
-          notifyListeners();
-        });
-        await StoriesApiController().getStories(uid: temp.uid).then((stories) {
-          if (stories != null) {
-            temp.userStoriesModel = stories;
-            swipeCardModelList.forEach((elem) {
-              if (elem is SwipeCardModel) {
-                SwipeCardModel element = elem;
-                if (element.createAccountData.uid == temp.uid) {
-                  element.stories = stories;
-                  notifyListeners();
-                }
-              }
-            });
-          } else {
-            print("No Stories : ${temp.uid}");
-          }
-        }).whenComplete(() {
-          notifyListeners();
-        });
+        // await VideoController().getAllVideos(temp.uid).then((videos) {
+        //   List<Videos> lis = [];
+        //   if (videos.length > 0) {
+        //     videos.forEach((element) {
+        //       Videos video = Videos.fromJson(element);
+        //       lis.add(video);
+        //     });
+        //   }
+        //   userVideosModel.videos = lis;
+        //  // notifyListeners();
+        // }).whenComplete(() {
+        //   notifyListeners();
+        // });
+        // await StoriesApiController().getStories(uid: temp.uid).then((stories) {
+        //   if (stories != null) {
+        //     temp.userStoriesModel = stories;
+        //     swipeCardModelList.forEach((elem) {
+        //       if (elem is SwipeCardModel) {
+        //         SwipeCardModel element = elem;
+        //         if (element.createAccountData.uid == temp.uid) {
+        //           element.stories = stories;
+        //           notifyListeners();
+        //         }
+        //       }
+        //     });
+        //   } else {
+        //     print("No Stories : ${temp.uid}");
+        //   }
+        // }).whenComplete(() {
+        //   notifyListeners();
+        // });
       }
       if (swipeCardModelList != null && swipeCardModelList.length > 0) {
         for (int i = 0; i < swipeCardModelList.length; i++) {
