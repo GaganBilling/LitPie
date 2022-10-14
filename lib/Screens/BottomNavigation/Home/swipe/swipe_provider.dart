@@ -731,7 +731,7 @@ class SwipeProvider extends ChangeNotifier {
         if (querySnapshot.docs.length < laterDocLimit) {
           hasMore = false;
           isFetching = false;
-          notifyListeners();
+         // notifyListeners();
           print("_getFinalUsersFromDocuments1");
           await _getFinalUsersFromDocuments(querySnapshot.docs);
           print("No More Swipe Load");
@@ -739,7 +739,7 @@ class SwipeProvider extends ChangeNotifier {
           break;
         } else {
           lastDocument = querySnapshot.docs[querySnapshot.docs.length - 1];
-         // notifyListeners();
+
           //add to SwipeCardModelList -->
           //await
           print("_getFinalUsersFromDocuments2");
@@ -749,7 +749,7 @@ class SwipeProvider extends ChangeNotifier {
       }
     }
     isFetching = false;
-    notifyListeners();
+   // notifyListeners();
   }
 
   Future<void> _getFinalUsersFromDocuments(
@@ -807,7 +807,7 @@ class SwipeProvider extends ChangeNotifier {
           } else {
             userImagesModel.images = [];
           }
-          notifyListeners();
+         // notifyListeners();
           return userImagesModel;
         }).whenComplete(() {
           notifyListeners();
@@ -868,15 +868,15 @@ class SwipeProvider extends ChangeNotifier {
                 swipeCardModelList[i].images.images;
                 print(
                     "The length of item videos are :${swipeCardModelList[i].userVideosModel.videos.length}");
-                notifyListeners();
+            //    notifyListeners();
               }
             }
           }
-          notifyListeners();
+         // notifyListeners();
         }
       }
     }
-    notifyListeners();
+  //  notifyListeners();
   }
 
   void removeSwipeCard({@required SwipeCardModel swipeCardModel}) {

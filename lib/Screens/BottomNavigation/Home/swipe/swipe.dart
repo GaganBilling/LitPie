@@ -97,7 +97,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         color: themeProvider.isDarkMode ? dRed : white,
                       ),
                       height: double.infinity,
-                      child: swipeProvider.isFetching
+                      child: swipeProvider.swipeCardModelList.length <= 0
                               ? SingleChildScrollView(
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
