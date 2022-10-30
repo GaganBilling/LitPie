@@ -65,6 +65,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
 
   _updateLocationData() async {
     print("turn on lacation5");
+    await Navigator.of(context).pushReplacementNamed('/Home');
     var currentLocation = await getLocationCoordinates();
     print("turn on lacation6");
    // Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();

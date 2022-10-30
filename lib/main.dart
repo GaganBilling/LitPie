@@ -11,6 +11,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:litpie/Screens/BottomNavigation/Home/home.dart';
 import 'package:litpie/Screens/BottomNavigation/Home/swipe/swipe_provider.dart';
 import 'package:litpie/Screens/BottomNavigation/bottomNav.dart';
 import 'package:litpie/Screens/BottomNavigation/notifications/notification_provider.dart';
@@ -572,6 +573,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 '/BottomNav': (context) => BottomNav(),
                 '/Splash': (context) => Splash(),
                 '/Welcome': (context) => Welcome(),
+                '/Home': (context) => Home(),
                 // '/SendMedia': (context) => SendMedia(),
                 '/CreateAccount': (context) => CreateAccount(),
                 '/TurnLocationOn': (context) => TurnLocationOn(),
