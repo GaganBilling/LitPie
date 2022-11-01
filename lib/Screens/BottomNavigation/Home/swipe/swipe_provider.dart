@@ -706,7 +706,7 @@ class SwipeProvider extends ChangeNotifier {
         }
       //  notifyListeners();
       }
-      notifyListeners();
+    //  notifyListeners();
 
       if (querySnapshot_likedUIDsUsersDetail.length > 0) {
        // await _getFinalUsersFromDocuments(querySnapshot_likedUIDsUsersDetail);

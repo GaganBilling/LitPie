@@ -15,6 +15,8 @@ import 'package:litpie/controller/FirebaseController.dart';
 import 'package:litpie/models/createAccountData.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:litpie/variables.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PlanPage extends StatefulWidget {
   PlanPage({
@@ -74,12 +76,48 @@ class _PlanPageState extends State<PlanPage>
     DateTime end = endDate.toDate();
     int totalDiff = end.difference(start).inSeconds;
     int currentDiff = DateTime.now().difference(end).inSeconds.abs();
-    double percentage = 1.0 - (currentDiff / totalDiff);
+    print(startDate.toDate().toString());
+    double percentage = ((( totalDiff - currentDiff) / currentDiff));
     print(percentage);
-    if (end.difference(DateTime.now()).inSeconds <= 0) {
+    int totalDays = end.difference(start).inDays;
+    int totalDaysFromNow = end.difference(DateTime.now()).inDays;
+    print(totalDays);
+    print(totalDaysFromNow);
+    print(totalDays/totalDaysFromNow);
+    print(totalDays%totalDaysFromNow);
+    print("md- per -- "+ MediaQuery.of(context).size.width.toString());
+    print(percentage);
+
+    if (percentage > 0 && percentage < 0.02) {
+      return 0.1;
+    } else if (percentage > 0.02 && percentage < 0.03) {
+      return 0.15;
+    } else if (percentage >= 0.03 && percentage < 0.04 ) {
+      return 0.2;
+    } else if (percentage > 0.04 && percentage < 0.05) {
+      return 0.25;
+    } else if (percentage >= 0.05 && percentage < 0.06 ) {
+      return 0.3;
+    } else if (percentage > 0.06 && percentage < 0.07) {
+      return 0.35;
+    } else if (percentage >= 0.07 && percentage < 0.08 ) {
+      return 0.4;
+    }else if (percentage >= 0.08 && percentage < 0.09 ) {
+      return 0.45;
+    } else if (percentage >= 0.09 && percentage <0.5) {
+      return percentage;
+    } else if (percentage >= 0.5 && percentage <0.6) {
+      return 0.5;
+    }  else if (percentage >= 0.9 && percentage <1.5) {
+      return 0.85;
+    }else if (percentage >= 1.5 && percentage <2.0) {
+      return 0.9;
+    }  else if (percentage >= 2 && percentage <6) {
+      return 0.95;
+    } else {
       return 1.0;
     }
-    return percentage.abs() > 9.99 ? 1.0 : percentage;
+    return percentage.abs();
   }
 
   void detailDialog(context, String detail) async {
@@ -302,48 +340,45 @@ class _PlanPageState extends State<PlanPage>
                         // ),
                         Tooltip(
                           message: "Post Duration".tr(),
-                          child: Container(
-                            height: 16,
-                            padding: EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 2.0),
-                            width: MediaQuery.of(context).size.width,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: Colors.blueGrey,
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                  minWidth: double.infinity,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: getDurationPercentage(
-                                              /*planDoc["createdAt"],*/
-                                              pdoc["createdAt"],
-                                              /* planDoc
-                                          ["pTimeStamp"])*/
-                                              pdoc["pTimeStamp"]) <=
-                                          0.90
-                                      ? Colors.green
-                                      : Colors.red,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                width: (MediaQuery.of(context).size.width *
-                                            getDurationPercentage(
-                                                pdoc["createdAt"],
-                                                pdoc["pTimeStamp"])) >
-                                        20
-                                    ? (MediaQuery.of(context).size.width *
-                                            getDurationPercentage(
-                                                pdoc["createdAt"],
-                                                pdoc["pTimeStamp"])) -
-                                        20
-                                    : (MediaQuery.of(context).size.width *
-                                        getDurationPercentage(pdoc["createdAt"],
-                                            pdoc["pTimeStamp"])),
-                              ),
-                            ),
+                          child: LinearPercentIndicator(
+                            width: MediaQuery.of(context).size.width-10,
+                            lineHeight: 14.0,
+                            barRadius: Radius.circular(5),
+                            percent: getDurationPercentage(pdoc["createdAt"],
+                              pdoc["pTimeStamp"]),
+                            progressColor: Colors.green,
                           ),
+                          // Container(
+                          //   height: 16,
+                          //   padding: EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 2.0),
+                          //   width: ( MediaQuery.of(context).size.width- *getDurationPercentage(pdoc["createdAt"],
+                          //       pdoc["pTimeStamp"])
+                          //       ),
+                          //   child: Container(
+                          //     width: MediaQuery.of(context).size.width,
+                          //     decoration: BoxDecoration(
+                          //       color: Colors.blueGrey,
+                          //       borderRadius: BorderRadius.circular(10.0),
+                          //     ),
+                          //     child: Container(
+                          //       constraints: BoxConstraints(
+                          //         minWidth: double.infinity,
+                          //       ),
+                          //       decoration: BoxDecoration(
+                          //         color: getDurationPercentage(
+                          //                     /*planDoc["createdAt"],*/
+                          //                     pdoc["createdAt"],
+                          //                     /* planDoc
+                          //                 ["pTimeStamp"])*/
+                          //                     pdoc["pTimeStamp"]) <=
+                          //                 9
+                          //             ? Colors.green
+                          //             : Colors.red,
+                          //         borderRadius: BorderRadius.circular(10.0),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                         ),
                         Expanded(
                           child: Stack(

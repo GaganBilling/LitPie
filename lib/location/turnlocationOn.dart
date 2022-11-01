@@ -71,6 +71,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
    // Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
     if (currentLocation == null) {
       await getLocationCoordinates();
+
     } else {
       print("turn on lacation3");
       userData.addAll(
@@ -84,7 +85,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
       );
       print("turn on lacation4");
       setUserData(userData);
-      await Navigator.of(context).pushReplacementNamed('/BottomNav');
+    //  await Navigator.of(context).pushReplacementNamed('/BottomNav');
     }
   }
 

@@ -148,11 +148,13 @@ class _ExplorePlans extends State<ExplorePlans>
       querySnapshot = await loadExplorePlansQuery().get();
       if(querySnapshot!=null){
         querySnapshot= await _firebaseController.notificationColReference.limit(plansLimit).where("type",isEqualTo: "plans") .get();
-      }*/ /*.limit(plansLimit).get();*/ /*
+      }*/
+  /*.limit(plansLimit).get();*/ /*
     } */ /*else {
       querySnapshot = await _firebaseController.notificationColReference.limit(plansLimit).where("type",isEqualTo: "plans") .get();
       // querySnapshot = await loadExplorePlansQuery().limit(plansLimit).startAfterDocument(plansLastDocument).get();
-    }*/ /*
+    }*/
+  /*
     if (querySnapshot.docs.length < plansLimit) {
       hasMore = false;
     }
@@ -206,7 +208,8 @@ class _ExplorePlans extends State<ExplorePlans>
     */ /*else {
       querySnapshot = await _firebaseController.notificationColReference.limit(plansLimit).where("type",isEqualTo: "plans") .get();
       // querySnapshot = await loadExplorePlansQuery().limit(plansLimit).startAfterDocument(plansLastDocument).get();
-    }*/ /*
+    }*/
+  /*
     if (querySnapshot.docs.length < plansLimit) {
       hasMore = false;
     }
@@ -960,10 +963,11 @@ class _ExplorePlans extends State<ExplorePlans>
         .get();
     if (allPlans.docs.isNotEmpty) {
       allPlans.docs.forEach((element) async {
-        getDurationPercentage(element["createdAt"], element["pTimeStamp"]) <=
-                0.90
-            ? await planData.add(element.data())
-            : element.reference.delete();
+        planData.add(element.data());
+         getDurationPercentage(element["createdAt"], element["pTimeStamp"]);
+        //         0.90
+        //     ? planData.add(element.data())
+        //     : element.reference.delete();
       });
     }
     plansLoading = false;
@@ -976,8 +980,16 @@ class _ExplorePlans extends State<ExplorePlans>
     DateTime end = endDate.toDate();
     int totalDiff = end.difference(start).inSeconds;
     int currentDiff = DateTime.now().difference(end).inSeconds.abs();
-    double percentage = 1.0 - (currentDiff / totalDiff);
+    print(startDate);
+    print(endDate);
+    print(totalDiff);
+
+    double percentage1 = ((start.difference(DateTime.now()).inSeconds)+1)/((end.difference(start).inSeconds)+1);
+    print(percentage1.abs());
+    double percentage = (((totalDiff - currentDiff) / totalDiff))*10;
+    print('percentage - -' );
     print(percentage);
+    print(percentage.abs());
     if (end.difference(DateTime.now()).inSeconds <= 0) {
       return 1.0;
     }
@@ -985,6 +997,7 @@ class _ExplorePlans extends State<ExplorePlans>
   }
 
   cancelRequest(int index, CreateAccountData planUser) async {
+    print("inside cancel request");
     planRef
         .where("pdataOwnerID",
             isEqualTo: planUser
