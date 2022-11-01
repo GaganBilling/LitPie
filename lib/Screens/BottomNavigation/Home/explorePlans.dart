@@ -963,16 +963,19 @@ class _ExplorePlans extends State<ExplorePlans>
         .get();
     if (allPlans.docs.isNotEmpty) {
       allPlans.docs.forEach((element) async {
-        planData.add(element.data());
-         getDurationPercentage(element["createdAt"], element["pTimeStamp"]);
-        //         0.90
-        //     ? planData.add(element.data())
-        //     : element.reference.delete();
+       // planData.add(element.data());
+        print("element - " + element["pTimeStamp"].seconds.toString());
+        print("element12 - " + Timestamp.fromDate(DateTime.now()).seconds.toString());
+        print(element["pTimeStamp"].seconds <= Timestamp.fromDate(DateTime.now()).seconds);
+            element["pTimeStamp"].seconds <= Timestamp.fromDate(DateTime.now()).seconds
+            ? element.reference.delete()
+            : planData.add(element.data());
       });
     }
-    plansLoading = false;
 
-    if (mounted) setState(() {});
+    if (mounted) setState(() {
+      plansLoading = false;
+    });
   }
 
   double getDurationPercentage(Timestamp startDate, Timestamp endDate) {

@@ -83,8 +83,8 @@ class _PlanPageState extends State<PlanPage>
     int totalDaysFromNow = end.difference(DateTime.now()).inDays;
     print(totalDays);
     print(totalDaysFromNow);
-    print(totalDays/totalDaysFromNow);
-    print(totalDays%totalDaysFromNow);
+   // print(totalDays/totalDaysFromNow);
+  //  print(totalDays%totalDaysFromNow);
     print("md- per -- "+ MediaQuery.of(context).size.width.toString());
     print(percentage);
 
@@ -108,12 +108,16 @@ class _PlanPageState extends State<PlanPage>
       return percentage;
     } else if (percentage >= 0.5 && percentage <0.6) {
       return 0.5;
-    }  else if (percentage >= 0.9 && percentage <1.5) {
+    }else if (percentage >= 0.6 && percentage <0.9) {
+      return 0.9;
+    }  else if (percentage >= 0.9 && percentage <1.0) {
       return 0.85;
+    }else if (percentage >= 1.0 && percentage <1.5) {
+      return 0.95;
     }else if (percentage >= 1.5 && percentage <2.0) {
       return 0.9;
-    }  else if (percentage >= 2 && percentage <6) {
-      return 0.95;
+    }  else if (percentage >= 2.0 && percentage <6) {
+      return 0.9;
     } else {
       return 1.0;
     }
@@ -346,39 +350,14 @@ class _PlanPageState extends State<PlanPage>
                             barRadius: Radius.circular(5),
                             percent: getDurationPercentage(pdoc["createdAt"],
                               pdoc["pTimeStamp"]),
-                            progressColor: Colors.green,
+                            progressColor: getDurationPercentage(
+                                            pdoc["createdAt"],
+                                            pdoc["pTimeStamp"]) <=
+                                        0.5
+                                    ? Colors.green
+                                    : Colors.red,
                           ),
-                          // Container(
-                          //   height: 16,
-                          //   padding: EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 2.0),
-                          //   width: ( MediaQuery.of(context).size.width- *getDurationPercentage(pdoc["createdAt"],
-                          //       pdoc["pTimeStamp"])
-                          //       ),
-                          //   child: Container(
-                          //     width: MediaQuery.of(context).size.width,
-                          //     decoration: BoxDecoration(
-                          //       color: Colors.blueGrey,
-                          //       borderRadius: BorderRadius.circular(10.0),
-                          //     ),
-                          //     child: Container(
-                          //       constraints: BoxConstraints(
-                          //         minWidth: double.infinity,
-                          //       ),
-                          //       decoration: BoxDecoration(
-                          //         color: getDurationPercentage(
-                          //                     /*planDoc["createdAt"],*/
-                          //                     pdoc["createdAt"],
-                          //                     /* planDoc
-                          //                 ["pTimeStamp"])*/
-                          //                     pdoc["pTimeStamp"]) <=
-                          //                 9
-                          //             ? Colors.green
-                          //             : Colors.red,
-                          //         borderRadius: BorderRadius.circular(10.0),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
+
                         ),
                         Expanded(
                           child: Stack(
