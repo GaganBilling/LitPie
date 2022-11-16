@@ -109,7 +109,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
         //TurnLocationOn
-        Navigator.of(context).pushReplacementNamed('/TurnLocationOn');
+        print("TurnLocationOn1 ");
+      //  Navigator.of(context).pushReplacementNamed('/Home');
       } else {
         await _updateLocationData();
       }
@@ -201,7 +202,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       } catch (e) {
         print(e.toString());
       }
-      print(querySnapshot);
+      print("querySnapshot - - ");print(querySnapshot);
     } else {
       querySnapshot = await loadExplorePlansQuery()
           .limit(plansLimit)

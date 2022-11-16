@@ -99,7 +99,7 @@ class StoryMediaVideoScrollListController extends ChangeNotifier {
   }
 
   _didUpdateValue() {
-    notifyListeners();
+   // notifyListeners();
   }
 
   VPVideoController playerOfIndex(int index) {
@@ -140,7 +140,7 @@ class StoryMediaVideoScrollListController extends ChangeNotifier {
     }catch(e){
       print("ERROR (LOAD INDEX CALL): $e");
     }
-    notifyListeners();
+    //notifyListeners();
   }
 
   ValueNotifier<int> index = ValueNotifier<int>(0);

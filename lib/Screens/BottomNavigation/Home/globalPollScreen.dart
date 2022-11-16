@@ -9,6 +9,7 @@ import 'package:litpie/Screens/reportUser.dart';
 import 'package:litpie/Theme/colors.dart';
 import 'package:litpie/common/Utils.dart';
 import 'package:litpie/models/createAccountData.dart';
+import 'package:litpie/provider/global_posts/model/pollDataModel.dart';
 import 'package:litpie/provider/global_posts/provider/globalPostProvider.dart';
 import 'package:litpie/variables.dart';
 import 'package:litpie/widgets/LinearProgressBar.dart';
@@ -154,11 +155,16 @@ class _GlobalPollScreenState extends State<GlobalPollScreen> {
                                                     true;
                                                 /*  getMyPollsWithLoadMore();*/
                                               },
-                                              onVotePressed: (value) {
-                                                globalPostProvider.voteToPoll(
+                                              onVotePressed: (value) async {
+                                                print("iuooi2");
+                                                await globalPostProvider.voteToPoll(
                                                     value,
                                                     globalPostProvider
-                                                        .posts[index].id);
+                                                        .posts[index].id).then((value) async {
+                                                          print("iuooi");
+                                                          await Navigator.of(context).pushReplacementNamed('/Home');
+                                                });
+
                                               },
                                             )
                                           : Card(
@@ -481,14 +487,19 @@ class _GlobalPollScreenState extends State<GlobalPollScreen> {
                                                       pollRef: globalPostProvider
                                                           .firebaseController
                                                           .postColReference,
-                                                      onVotePressed: (value) {
-                                                        globalPostProvider
+                                                      onVotePressed: (value) async {
+                                                        print("iuooi3");
+                                                        await globalPostProvider
                                                             .voteToPoll(
                                                                 value,
                                                                 globalPostProvider
                                                                     .posts[
                                                                         index]
-                                                                    .id);
+                                                                    .id).then((value) async {
+                                                          print("iuooi33");
+                                                          await Navigator.of(context).pushReplacementNamed('/Home');
+                                                        });
+
                                                       },
                                                       deletePollPressed:
                                                           () async {
@@ -1200,8 +1211,7 @@ class _GlobalPollScreenState extends State<GlobalPollScreen> {
                                                               if (!snapshot
                                                                   .hasData)
                                                                 return Container();
-                                                              print(snapshot
-                                                                  .data.docs);
+
                                                               if (snapshot
                                                                   .data
                                                                   .docs

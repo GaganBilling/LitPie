@@ -218,20 +218,30 @@ Future showWelcomDialog(context) async {
 Future<Map> getLocationCoordinates() async {
   loc.Location location = loc.Location();
   try {
+    print("poer3");
     await location.serviceEnabled().then((value) async {
+      print("poer14");
       if (!value) {
-        await location.requestService();
+        print("poer4");
+        location.requestService().then((value) => {
+          print("poer42")
+        });
       }
     });
     var coordinates;
     try {
-      coordinates = await location.getLocation();
+      print("poer44");
+      coordinates =  await Future.any([
+        location.getLocation(), // ← hope this returns first
+        timeoutAfter(sec: 20, onTimeout: () => 'Timed Out!!', ) // ← waited too long, do this
+      ]);
       print("coordinates - : $coordinates");
       //coordinates = await Geolocator.getCurrentPosition(
       //    desiredAccuracy: LocationAccuracy.high);
     } catch (e) {
       print("Error: $e");
     }
+    print("ppor -11");
     return await getCurrentLocation(
       latitude: coordinates.latitude,
       longitude: coordinates.longitude,
@@ -240,6 +250,10 @@ Future<Map> getLocationCoordinates() async {
     print(e);
     return null;
   }
+}
+
+Future<dynamic> timeoutAfter({int sec, Function() onTimeout}) async {
+  return Future.delayed(Duration(seconds: sec), onTimeout);
 }
 
 // Future<Map> getLocationCoordinates() async {
@@ -271,7 +285,7 @@ Future<Map> getLocationCoordinates() async {
 //geolocater package
 Future getCurrentLocation({latitude, longitude}) async {
   Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high);
+      desiredAccuracy: LocationAccuracy.lowest);
   try {
     Map<String, dynamic> obj = {};
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude,localeIdentifier: "en");

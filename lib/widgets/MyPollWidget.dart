@@ -77,7 +77,10 @@ class _MyPollWidgetState extends State<MyPollWidget> {
   void initState() {
     creator =
         widget.pollDataModel.pollQuestion.createdBy; //poll creator user-id
-    checkWhetherAlreadyVoted();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await checkWhetherAlreadyVoted();
+    });
+
     try {
       durationPercentage = getDurationPercentage(
           widget.pollDataModel.pollQuestion.createdAt,
@@ -487,7 +490,11 @@ class _MyPollWidgetState extends State<MyPollWidget> {
                                   : Colors.blueGrey,
                           fontSize: 18.0,
                         ),
-                        viewType: isAlreadyVoted
+                        viewType: (isAlreadyVoted || getDurationPercentage(
+                            widget.pollDataModel.pollQuestion.createdAt,
+                            widget
+                                .pollDataModel.pollQuestion.duration) ==
+                            1.0)
                             ? PollsType.readOnly
                             : PollsType.voter,
                         onVote: widget.onVotePressed,
@@ -522,7 +529,7 @@ class _MyPollWidgetState extends State<MyPollWidget> {
                                         .pollDataModel.pollQuestion.duration) ==
                                 1.0
                             ? "Poll Ended".tr()
-                            : "Poll Ends".tr())
+                            : "Poll Ends2".tr())
                       ],
                     ),
                   ),

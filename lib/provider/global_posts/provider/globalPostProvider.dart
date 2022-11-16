@@ -453,7 +453,7 @@ class GlobalPostProvider extends ChangeNotifier {
     });
 
     // isLoadingComment = false;
-    notifyListeners();
+   // notifyListeners();
   }
 
   Future<bool> getDeleteData(String postId, String commentId) async {
@@ -609,7 +609,7 @@ class GlobalPostProvider extends ChangeNotifier {
       print(document);
 
       if (document == null || document.docs.isEmpty) {
-        var ref = await FirebaseFirestore.instance
+        var ref =  FirebaseFirestore.instance
             .collection("Post")
             .doc(pollId)
             .collection("VotedBy")
@@ -622,7 +622,7 @@ class GlobalPostProvider extends ChangeNotifier {
           "createdAt": DateTime.now().millisecondsSinceEpoch ~/ 1000,
         });
       } else {
-        var ref = await FirebaseFirestore.instance
+        var ref =  FirebaseFirestore.instance
             .collection("Post")
             .doc(pollId)
             .collection("VotedBy")
@@ -636,5 +636,6 @@ class GlobalPostProvider extends ChangeNotifier {
         });
       }
     }
+
   }
 }

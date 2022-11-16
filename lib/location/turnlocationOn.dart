@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:litpie/location/LocationProvider.dart';
 import 'package:litpie/location/allowLocation.dart';
 import 'package:litpie/main.dart';
 import 'package:location/location.dart';
@@ -10,6 +11,7 @@ import 'package:litpie/Theme/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart' as pHandler;
+import 'package:provider/provider.dart';
 
 import '../variables.dart';
 
@@ -21,8 +23,9 @@ class TurnLocationOn extends StatefulWidget {
 class _TurnLocationOn extends State<TurnLocationOn> {
   Location location = Location();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  LocationProvider locationprovider;
   Map<String, dynamic> userData = {};
-
+  bool _isLoading = false;
   Future setUserData(Map<String, dynamic> userData) async {
     final auth = FirebaseAuth.instance;
     await FirebaseFirestore.instance.collection("users").doc(auth.currentUser.uid).set(userData, SetOptions(merge: true));
@@ -49,28 +52,32 @@ class _TurnLocationOn extends State<TurnLocationOn> {
             backgroundColor: Colors.blueGrey,
             textColor: Colors.white,
             fontSize: 16.0);
+        print("turn on 1");
         await pHandler.openAppSettings().then((v) {
           print("App Setting Closed");
           Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
         });
+        print("turn on 12");
       } else {
-        print("turn on lacation1");
+        print("turn on lacation13");
         await _updateLocationData();
       }
     } else {
       print("turn on lacation2");
       await _updateLocationData();
     }
+    print("turn on 11");
   }
 
   _updateLocationData() async {
     print("turn on lacation5");
-    await Navigator.of(context).pushReplacementNamed('/Home');
+
     var currentLocation = await getLocationCoordinates();
     print("turn on lacation6");
    // Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
     if (currentLocation == null) {
-      await getLocationCoordinates();
+      //await getLocationCoordinates();
+      print("turn on lacation32");
 
     } else {
       print("turn on lacation3");
@@ -83,9 +90,9 @@ class _TurnLocationOn extends State<TurnLocationOn> {
           },
         },
       );
-      print("turn on lacation4");
+      print("turn on lacation4 ");
       setUserData(userData);
-    //  await Navigator.of(context).pushReplacementNamed('/BottomNav');
+      Navigator.of(context).pushReplacementNamed('/Home');
     }
   }
 
@@ -94,6 +101,7 @@ class _TurnLocationOn extends State<TurnLocationOn> {
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
+    locationprovider = Provider.of<LocationProvider>(context);
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -145,7 +153,11 @@ class _TurnLocationOn extends State<TurnLocationOn> {
                         ),
                         textAlign: TextAlign.center,
                       )),
-                  SizedBox(
+                  _isLoading
+                      ? Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: const CircularProgressIndicator(),
+                  ) : SizedBox(
                     height: 80,
                     width: MediaQuery.of(context).size.width,
                     child: Padding(
@@ -153,8 +165,15 @@ class _TurnLocationOn extends State<TurnLocationOn> {
                       child: ElevatedButton(
                           child: Text("Allow Location2".tr(), style: TextStyle(fontSize: _screenWidth >= miniScreenWidth ? 22 : 18, fontWeight: FontWeight.w600)),
                           onPressed: () async {
-                           await _updateLocation();
-                          // Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
+                            setState(()  {
+                              _isLoading = true;
+                            });
+                            print("sdfks ");
+                            await _updateLocation();
+                            setState(()  {
+                              _isLoading = false;
+                            });
+                           // Navigator.of(context).pushReplacementNamed('/Home');
                           },
                           style: ElevatedButton.styleFrom(
                               primary: mRed,

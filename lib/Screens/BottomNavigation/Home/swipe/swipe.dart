@@ -56,7 +56,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    swipeProvider = Provider.of<SwipeProvider>(context);
+    swipeProvider = Provider.of<SwipeProvider>(context, listen: true);
     print("inside swipe screen - "+ swipeProvider.swipeCardModelList.length.toString());
 
     swipeProvider.screenWidth = MediaQuery.of(context).size.width;

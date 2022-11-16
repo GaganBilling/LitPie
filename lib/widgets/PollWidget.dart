@@ -356,6 +356,7 @@ class _PollWidgetState extends State<PollWidget> {
             ),
             child: OutlinedButton(
               onPressed: () {
+                print("Opbe1");
                 setState(() {
                   userPollChoice = 0;
                 });
@@ -391,6 +392,7 @@ class _PollWidgetState extends State<PollWidget> {
             ),
             child: OutlinedButton(
               onPressed: () {
+                print("Opbe2");
                 setState(() {
                   userPollChoice = 1;
                 });
@@ -427,6 +429,7 @@ class _PollWidgetState extends State<PollWidget> {
                   ),
                   child: OutlinedButton(
                     onPressed: () {
+                      print("Opbe3");
                       setState(() {
                         userPollChoice = 2;
                       });
@@ -464,6 +467,7 @@ class _PollWidgetState extends State<PollWidget> {
                   ),
                   child: OutlinedButton(
                     onPressed: () {
+                      print("Opbe4");
                       setState(() {
                         userPollChoice = 3;
                       });
@@ -501,6 +505,7 @@ class _PollWidgetState extends State<PollWidget> {
                   ),
                   child: OutlinedButton(
                     onPressed: () {
+                      print("Opbe5");
                       setState(() {
                         userPollChoice = 4;
                       });

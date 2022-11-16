@@ -76,7 +76,7 @@ class SwipeProvider extends ChangeNotifier {
     }
     await init();
     await getInitialSwipeCard();
-    notifyListeners();
+   // notifyListeners();
   }
 
   //checkRoseCount
@@ -561,7 +561,7 @@ class SwipeProvider extends ChangeNotifier {
     await getSwipedCount();
     // await getUserList();
     await getInitialSwipeCard();
-    notifyListeners();
+    //notifyListeners();
   }
 
   Future getSwipedCount() {
@@ -577,7 +577,7 @@ class SwipeProvider extends ChangeNotifier {
         .listen((event) {
       print("swipe " + event.docs.length.toString());
       swipeCount = event.docs.length;
-      notifyListeners();
+     // notifyListeners();
     });
   }
 
@@ -591,7 +591,7 @@ class SwipeProvider extends ChangeNotifier {
     if (tempQueries.docs.isNotEmpty) {
       likedByList = tempQueries.docs;
     }
-    notifyListeners();
+   // notifyListeners();
   }
 
   Query likedByUserQuery({@required String userUid}) {
@@ -648,7 +648,7 @@ class SwipeProvider extends ChangeNotifier {
     if (!hasMore) {
       print("No More Post");
       isFetching = false;
-      notifyListeners();
+    //  notifyListeners();
       return;
     }
 
@@ -810,6 +810,7 @@ class SwipeProvider extends ChangeNotifier {
          // notifyListeners();
           return userImagesModel;
         }).whenComplete(() {
+          print("ehen complete");
           notifyListeners();
         });
 

@@ -94,7 +94,7 @@ class NewGlobalStoryListController extends ChangeNotifier {
   }
 
   _didUpdateValue() {
-    notifyListeners();
+   // notifyListeners();
   }
 
   VPVideoController playerOfIndex(int index) {
@@ -108,7 +108,7 @@ class NewGlobalStoryListController extends ChangeNotifier {
     @required List<VPVideoController> laterList,
   }){
     playerList.addAll(laterList);
-    notifyListeners();
+   // notifyListeners();
   }
 
   init({
@@ -134,7 +134,7 @@ class NewGlobalStoryListController extends ChangeNotifier {
     }catch(e){
       print("ERROR (LOAD INDEX CALL): $e");
     }
-    notifyListeners();
+   // notifyListeners();
   }
 
   ValueNotifier<int> index = ValueNotifier<int>(0);

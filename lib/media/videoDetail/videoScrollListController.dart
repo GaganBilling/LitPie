@@ -71,7 +71,7 @@ class VideoScrollListController extends ChangeNotifier {
   }
 
   _didUpdateValue() {
-    notifyListeners();
+  //  notifyListeners();
   }
 
   VPVideoController playerOfIndex(int index, {bool isDelete,int currentIndex}) {
@@ -104,7 +104,7 @@ class VideoScrollListController extends ChangeNotifier {
     } catch (e) {
       print("ERROR (LOAD INDEX CALL): $e");
     }
-    notifyListeners();
+  //  notifyListeners();
   }
 
   ValueNotifier<int> index = ValueNotifier<int>(0);

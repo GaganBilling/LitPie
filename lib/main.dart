@@ -20,6 +20,7 @@ import 'package:litpie/constants.dart';
 import 'package:litpie/controller/localNotificationController.dart';
 import 'package:litpie/controller/pushNotificationController.dart';
 import 'package:litpie/controller/rewardCollectController.dart';
+import 'package:litpie/location/LocationProvider.dart';
 import 'package:litpie/variables.dart';
 import 'package:litpie/Registration/OTPphoneUpdate.dart';
 import 'package:litpie/Screens/WelcomeScreen.dart';
@@ -322,13 +323,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         setState(() {
           isLocation = false;
           print("Location Off (ServiceEnabled 2)");
-          // TurnLocationOn();
+
+           TurnLocationOn();
         });
       }
     } else {
       setState(() {
         isLocation = true;
       });
+      print("turn on lacation45");
       await _updateLocationdata();
     }
   }
@@ -338,17 +341,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     var currentLocation;
     try {
       print("location 2");
-      // getLocationCoordinates().then((value) => print("location: $value"));
+       getLocationCoordinates().then((value) => print("location: $value"));
       try {
         currentLocation = await getLocationCoordinates();
       } catch (e) {
+        print("exception in CL :");
         print(e.toString());
       }
       print("CurrentLocation : $currentLocation");
       if (currentLocation == null) {
         setState(() {
           isLocation = false;
-         // TurnLocationOn();
+          TurnLocationOn();
         });
       } else {
         if (mounted)
@@ -375,13 +379,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<Map> getLocationCoordinates() async {
     loc.Location location = loc.Location();
     try {
+      print("ppor -11a");
       await location.serviceEnabled().then((value) async {
+        print("ppor -11ab");
         if (!value) {
           await location.requestService();
         }
+        print("ppor -11abc");
       });
+      print("ppor -11c");
       var coordinates = await location.getLocation();
       print("Coordinates $coordinates");
+      print("ppor -13");
       return await getCurrentLocation(
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
@@ -394,10 +403,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   //geolocater package
   Future<Map<String, dynamic>> getCurrentLocation({latitude, longitude}) async {
+    print("Get current addr: 1");
     geoLocator.Position position =
         await geoLocator.Geolocator.getCurrentPosition(
-            desiredAccuracy: geoLocator.LocationAccuracy.high);
+            desiredAccuracy: geoLocator.LocationAccuracy.lowest);
     try {
+      print("Get current addr: 2");
       Map<String, dynamic> obj = {};
       List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude,localeIdentifier: "en");
@@ -405,10 +416,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if(placemarks != null) {
         place = placemarks[0];
       }
+      print("Get current addr: 3");
       String currentAddress =
           "${place.locality ?? ''}, ${place.country ?? ''}.";
 
-      print(currentAddress);
+      print("Get current addr: "+currentAddress);
       obj['PlaceName'] = currentAddress;
       obj['latitude'] = position.latitude;
       obj['longitude'] = position.longitude;
@@ -533,6 +545,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ChangeNotifierProvider(create: (context) => RewardCollectController()),
         ChangeNotifierProvider(
           create: (context) => GlobalPostProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LocationProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => NotificationProvider(),
