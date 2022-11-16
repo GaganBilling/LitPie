@@ -212,13 +212,22 @@ class _ImageDetail extends State<ImageDetail> {
                                       var result = widget.imagesModel.images
                                           .remove(widget.imagesModel
                                               .images[_currentIndex]);
-                                      List<Images> dataList = [];
+                                      var dataList = [];
                                       if (widget.imagesModel.images.length >
                                           0) {
+                                        print('sfdksndf sdf');
+                                        print(widget.imagesModel.images.length);
+                                       // UserImagesModel sd = UserImagesModel.fromJson(widget.imagesModel.images);
                                         widget.imagesModel.images
                                             .forEach((element) async {
-                                          dataList.add(element);
+                                              print(element.toJson());
+                                        //  dataList.add(element);
+                                              dataList= widget.imagesModel.images.map((v) => v.toJson()).toList();
+                                          print(dataList.length);
+                                          print(result);
                                           if (result == true) {
+                                            print("inside 2");
+                                            print(dataList.toString());
                                             _firebaseController.userColReference
                                                 .doc(_firebaseController
                                                     .currentFirebaseUser.uid)
@@ -226,7 +235,7 @@ class _ImageDetail extends State<ImageDetail> {
                                                     imagesCollectionName)
                                                 .doc(_firebaseController
                                                     .currentFirebaseUser.uid)
-                                                .update({"images": dataList});
+                                                .set({"images": dataList.toList()});
                                             Fluttertoast.showToast(
                                                 msg:
                                                     "Image Deleted Successfully!!"
