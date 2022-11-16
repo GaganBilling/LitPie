@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 class TextPostModel {
   final String createdBy, textPost, postId, type;
-  final int likesCount, commentsCount;
+  int likesCount, commentsCount;
   final int createdAt;
   bool anonymously;
 

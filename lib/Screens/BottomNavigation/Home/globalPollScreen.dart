@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,6 +35,7 @@ class GlobalPollScreen extends StatefulWidget {
 class _GlobalPollScreenState extends State<GlobalPollScreen> {
   GlobalPostProvider globalPostProvider;
   CreateAccountData commentUserData;
+
 
   @override
   void initState() {
@@ -1701,21 +1704,49 @@ class _GlobalPollScreenState extends State<GlobalPollScreen> {
                                                                                     SizedBox(
                                                                                       width: 6.0,
                                                                                     ),
-                                                                                    commentList[commentIndex]["comment"] != ""
-                                                                                        ? Expanded(
-                                                                                            child: ReadMoreText(
-                                                                                              commentList[commentIndex]["comment"],
-                                                                                              colorClickableText: Colors.black,
-                                                                                              trimLines: 3,
-                                                                                              style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : black),
-                                                                                              moreStyle: TextStyle(fontWeight: FontWeight.bold),
-                                                                                              lessStyle: TextStyle(fontWeight: FontWeight.bold),
-                                                                                              trimMode: TrimMode.Line,
-                                                                                              trimCollapsedText: '...show more'.tr(),
-                                                                                              trimExpandedText: ' show less'.tr(),
+                                                                                    if (commentList[commentIndex]["comment"] != "") Container(
+                                                                                      width: MediaQuery.of(context).size.width -140,
+                                                                                            child: Row(
+                                                                                              children : [
+                                                                                                  Container(
+                                                                                                  width: 165,
+                                                                                                  child: ReadMoreText(
+                                                                                                    commentList[commentIndex]["comment"],
+                                                                                                    colorClickableText: Colors.black,
+                                                                                                    trimLines: 3,
+                                                                                                    style: TextStyle(color: themeProvider.isDarkMode ? Colors.white : black),
+                                                                                                    moreStyle: TextStyle(fontWeight: FontWeight.bold),
+                                                                                                    lessStyle: TextStyle(fontWeight: FontWeight.bold),
+                                                                                                    trimMode: TrimMode.Line,
+                                                                                                    trimCollapsedText: '...show more'.tr(),
+                                                                                                    trimExpandedText: ' show less'.tr(),
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Container(
+                                                                                                  width: 20,
+                                                                                                  child: IconButton(
+                                                                                                    onPressed: () async {
+                                                                                                      print("on icon button click");
+                                                                                                      await globalPostProvider.deletePost(commentList[commentIndex]["commentBy"],
+                                                                                                          globalPostProvider.posts[index].postId,
+                                                                                                          commentList[commentIndex]["commentId"],globalPostProvider.posts[index].commentsCount,
+                                                                                                        globalPostProvider.posts[index]
+                                                                                                          ).then((value) => {
+                                                                                                            print("deleted  o"),
+                                                                                                         // Navigator.of(context).pushReplacementNamed('/postScreen')
+                                                                                                      });
+                                                                                                    },
+                                                                                                    icon: Icon(
+                                                                                                        CupertinoIcons
+                                                                                                            .delete),
+                                                                                                    iconSize: 14,
+
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ]
+
                                                                                             ),
-                                                                                          )
-                                                                                        : SizedBox.shrink(),
+                                                                                          ) else SizedBox.shrink(),
                                                                                   ],
                                                                                 )
                                                                               ],

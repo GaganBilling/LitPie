@@ -28,6 +28,49 @@ class GlobalPostProvider extends ChangeNotifier {
   DocumentSnapshot lastDocument;
   int docLimit = 10;
 
+  Future deletePost(String createdBy,String docId, String commentID, int cCount,TextPostModel commentsCount) async {
+
+    print("createdBy ");
+    print( createdBy);
+    print(docId);
+    print(commentID);
+    if (createdBy == firebaseController.currentFirebaseUser.uid) {
+      print("createdBy +" "+ docId + " "+commentID");
+      await FirebaseFirestore.instance
+        .collection("Post")
+        .doc(docId).collection("Comments").doc(commentID).delete().catchError((e) {
+        Fluttertoast.showToast(
+            msg: "Comment Deletion Failed!!".tr(),
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 3,
+            backgroundColor: Colors.blueGrey,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }).then((value) async {
+        int val = commentsCount.commentsCount;
+
+        commentsCount.commentsCount = val-1;
+        await FirebaseFirestore.instance
+            .collection("Post")
+            .doc(docId).set(commentsCount.toMap()).then((value) => {
+        Fluttertoast.showToast(
+        msg: "Comment Deleted Successfully!!".tr(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.blueGrey,
+        textColor: Colors.white,
+        fontSize: 16.0)
+        }).whenComplete(() async {
+
+        });
+        });
+
+    }
+    notifyListeners();
+  }
+
   //
   List<dynamic> posts = [];
   TextEditingController commentController = TextEditingController();
