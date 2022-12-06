@@ -245,9 +245,30 @@ class _PlanPageState extends State<PlanPage>
       CreateAccountData pdata = userAccountData;
       print(pdata);
       Map<String, dynamic> pdoc = widget.pDoc;
-
+      print(pdoc["planplacepic"]);
       return Scaffold(
         key: UniqueKey(),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(20.0),
+          child: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              actions: [
+
+              ],
+              title: Text("My Plans",style: TextStyle(color: Colors.red),),
+              leading: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                      Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    child: (FirebaseAuth.instance.currentUser.uid == pdata.uid)  ? Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ) : SizedBox(),
+                  ))),
+        ),
         body: Transform.scale(
           scale: 0.9,
           child: Padding(
@@ -313,11 +334,11 @@ class _PlanPageState extends State<PlanPage>
                                         reportPost(pdata, pdoc['planId']);
                                       },
                                       child: Container(
-                                        child: Icon(
+                                        child: !(FirebaseAuth.instance.currentUser.uid == pdata.uid) ? Icon(
                                           CupertinoIcons.flag,
                                           size: 26.0,
                                           color: white,
-                                        ),
+                                        ) : SizedBox(),
                                       ),
                                     ),
                                   ),
@@ -418,8 +439,9 @@ class _PlanPageState extends State<PlanPage>
                                               ],
                                             ),
                                           )
-                                        : pdata.profilepic == null
-                                            ? Image.asset(placeholderImage,
+                                        : ((pdata.profilepic == null ||
+                                        pdata.profilepic == "")
+                                            ? Image.asset("assets/images/profile-dummy.png",
                                                 fit: BoxFit.cover)
                                             : CachedNetworkImage(
                                                 fit: BoxFit.cover,
@@ -448,7 +470,7 @@ class _PlanPageState extends State<PlanPage>
                                                     ),
                                                   ],
                                                 ),
-                                              ),
+                                    )),
                                   ),
                                 ),
                               ),
@@ -823,30 +845,61 @@ class _PlanPageState extends State<PlanPage>
                                                     print(FirebaseAuth.instance.currentUser.uid);
                                                     return (FirebaseAuth.instance.currentUser.uid == pdata.uid) ?
                                                     buildRequestButton(
-                                                        title: "Delete22"
+                                                        title: "Delete"
                                                             .tr(),
                                                         onTap: () async {
-
+                                                          await showDialog(
+                                                            context: context,
+                                                            builder: (_) => AlertDialog(
+                                                              title: const Text('Confirm'),
+                                                              content: const Text(
+                                                                  'You are going to delete the plan you created'),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: const Text('Cancel'),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed: () async {
                                                           await docRef .where("pdataOwnerID", isEqualTo: pdata.uid).get()
                                                               .then((value) async {
-                                                            print(value.docs[0]['planId']);
-                                                            await docRef.doc(value.docs[0]['planId']).delete().then((value) => {
+                                                            print(value
+                                                                .docs[0]['planId']);
+                                                            await docRef.doc(
+                                                                value
+                                                                    .docs[0]['planId'])
+                                                                .delete()
+                                                                .then((value) =>
+                                                            {
 
-                                                              Fluttertoast.showToast(
-                                                                  msg: "Plan Deleted!!".tr(),
-                                                                  toastLength: Toast.LENGTH_SHORT,
-                                                                  gravity: ToastGravity.BOTTOM,
+                                                              Fluttertoast
+                                                                  .showToast(
+                                                                  msg: "Plan Deleted!!"
+                                                                      .tr(),
+                                                                  toastLength: Toast
+                                                                      .LENGTH_SHORT,
+                                                                  gravity: ToastGravity
+                                                                      .BOTTOM,
                                                                   timeInSecForIosWeb: 3,
-                                                                  backgroundColor: Colors.blueGrey,
-                                                                  textColor: Colors.white,
+                                                                  backgroundColor: Colors
+                                                                      .blueGrey,
+                                                                  textColor: Colors
+                                                                      .white,
                                                                   fontSize: 16.0),
 
-                                                              Navigator.pop(context)
-
+                                                              Navigator.pop(
+                                                                  context)
                                                             });
-
                                                           });
-
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: const Text('OK'),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          );
 
                                                         })
                                                         :

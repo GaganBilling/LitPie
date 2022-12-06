@@ -179,11 +179,25 @@ class _AddVideo2 extends State<AddVideo2> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.0),
+        preferredSize: Size.fromHeight(50.0),
         child: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            actions: [
+
+            ],
+            leading: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+
+                    Navigator.of(context).pop();
+                },
+                child: Container(
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ))),
       ),
       body: Container(
         child: SafeArea(
@@ -210,6 +224,7 @@ class _AddVideo2 extends State<AddVideo2> {
                       onPressed: () => pickVideo(ImageSource.gallery)
                           .then((value) {
                         widget.callback(value);
+
                       }),
                       style: ElevatedButton.styleFrom(
                         primary: mRed,

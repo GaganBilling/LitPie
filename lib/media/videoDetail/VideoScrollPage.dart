@@ -53,24 +53,24 @@ class VideoScrollPage extends StatelessWidget {
             ),
           ),
         ),
-        // ValueListenableBuilder<bool>(
-        //     valueListenable: isVideoPlaying,
-        //     builder: (context, condition, child) {
-        //       if (!condition) {
-        //         return Container(
-        //           height: double.infinity,
-        //           width: double.infinity,
-        //           alignment: Alignment.center,
-        //           child: Icon(
-        //             Icons.play_circle_outline,
-        //             size: 80,
-        //             color: Colors.white.withOpacity(0.4),
-        //           ),
-        //         );
-        //       } else {
-        //         return Container();
-        //       }
-        //     }),
+        ValueListenableBuilder<bool>(
+            valueListenable: isVideoPlaying,
+            builder: (context, condition, child) {
+              if (!condition) {
+                return Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.play_circle_outline,
+                    size: 80,
+                    color: Colors.white.withOpacity(0.4),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }),
       ],
     );
     Widget videoGesture = GestureDetector(

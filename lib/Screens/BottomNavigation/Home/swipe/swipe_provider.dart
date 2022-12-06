@@ -814,19 +814,19 @@ class SwipeProvider extends ChangeNotifier {
           notifyListeners();
         });
 
-        // await VideoController().getAllVideos(temp.uid).then((videos) {
-        //   List<Videos> lis = [];
-        //   if (videos.length > 0) {
-        //     videos.forEach((element) {
-        //       Videos video = Videos.fromJson(element);
-        //       lis.add(video);
-        //     });
-        //   }
-        //   userVideosModel.videos = lis;
-        //  // notifyListeners();
-        // }).whenComplete(() {
-        //   notifyListeners();
-        // });
+        await VideoController().getAllVideos(temp.uid).then((videos) {
+          List<Videos> lis = [];
+          if (videos.length > 0) {
+            videos.forEach((element) {
+              Videos video = Videos.fromJson(element);
+              lis.add(video);
+            });
+          }
+          userVideosModel.videos = lis;
+         // notifyListeners();
+        }).whenComplete(() {
+         // notifyListeners();
+        });
         // await StoriesApiController().getStories(uid: temp.uid).then((stories) {
         //   if (stories != null) {
         //     temp.userStoriesModel = stories;

@@ -10,6 +10,7 @@ import 'package:litpie/Theme/theme_provider.dart';
 import 'package:litpie/controller/FirebaseController.dart';
 import 'package:litpie/media/placePicScreen.dart';
 import 'package:litpie/provider/global_posts/provider/globalPostProvider.dart';
+import 'package:litpie/widgets/LinearProgressBar.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -37,7 +38,7 @@ class _PlanDate extends State<PlanDate> {
       FirebaseFirestore.instance.collection("users");
 
   //double _maxScreenWidth;
-
+  bool dataisthere = false;
   TimeOfDay startTime;
   TimeOfDay endTime;
   DateTime pTimeStamp;
@@ -92,7 +93,7 @@ class _PlanDate extends State<PlanDate> {
     });
   }
 
-  void getAllData() async {
+  Future getAllData() async {
     QuerySnapshot doc = await _firebaseController.planColReference
         .where("pdataOwnerID",
             isEqualTo: _firebaseController.currentFirebaseUser.uid)
@@ -128,6 +129,7 @@ class _PlanDate extends State<PlanDate> {
         _dateController.text = getFormatDateFromTimestamp(pTimeStamp);
       });
     }
+    return;
   }
 
   String getFormatDateFromTimestamp(DateTime date) {
@@ -142,7 +144,12 @@ class _PlanDate extends State<PlanDate> {
 
   void initState() {
     super.initState();
-    getAllData();
+    getAllData().then((value) {
+      if (!mounted) return;
+      setState(() {
+        dataisthere = true;
+      });
+    });
   }
 
   @override
@@ -200,7 +207,9 @@ class _PlanDate extends State<PlanDate> {
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     final themeProvider = Provider.of<ThemeProvider>(context);
-    return GestureDetector(
+    return dataisthere == false
+        ? Scaffold(body: Center(child: LinearProgressCustomBar()))
+        : GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: _key,

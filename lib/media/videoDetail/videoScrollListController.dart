@@ -39,16 +39,16 @@ class VideoScrollListController extends ChangeNotifier {
       if (playerOfIndex(oldIndex).controller.value.isInitialized) {
         playerOfIndex(oldIndex).controller.seekTo(Duration.zero);
         playerOfIndex(oldIndex)?.pause();
-        print('OLD-INDEX: $oldIndex');
+      //  print('OLD-INDEX: $oldIndex');
       }
     }
     playerOfIndex(newIndex).controller.addListener(_didUpdateValue);
     playerOfIndex(newIndex).showPauseIcon.addListener(_didUpdateValue);
     playerOfIndex(newIndex).play();
-    print('NEW-INDEX $newIndex');
+  //  print('NEW-INDEX $newIndex');
     for (var i = 0; i < playerList.length; i++) {
       if (i < newIndex - disposeCount || i > newIndex + disposeCount) {
-        print('INDEX: $i');
+      //  print('INDEX: $i');
         playerOfIndex(i).controller.removeListener(_didUpdateValue);
         playerOfIndex(i).showPauseIcon.removeListener(_didUpdateValue);
         playerOfIndex(i).dispose();
@@ -59,19 +59,19 @@ class VideoScrollListController extends ChangeNotifier {
         }
       }
     }
-    // if (playerList.length - newIndex <= loadMoreCount + 1) {
-    //   _videoProvider.call(newIndex, playerList).then(
-    //         (list) async {
-    //       playerList.addAll(list);
-    //       notifyListeners();
-    //     },
-    //   );
-    // }
+    if (playerList.length - newIndex <= loadMoreCount + 1) {
+      _videoProvider.call(newIndex, playerList).then(
+            (list) async {
+          playerList.addAll(list);
+          notifyListeners();
+        },
+      );
+    }
     index.value = target;
   }
 
   _didUpdateValue() {
-  //  notifyListeners();
+    notifyListeners();
   }
 
   VPVideoController playerOfIndex(int index, {bool isDelete,int currentIndex}) {

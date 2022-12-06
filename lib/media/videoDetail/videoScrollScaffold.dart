@@ -143,7 +143,7 @@ class _VideoScrollScaffoldState extends State<VideoScrollScaffold>
       offsetY = 0;
       setState(() {});
     }
-    print(absorbing.toString());
+    print(" io pop opopo   "+absorbing.toString());
   }
 
   @override

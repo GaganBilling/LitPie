@@ -43,7 +43,7 @@ class _AddImages extends State<AddImages> with SingleTickerProviderStateMixin {
   bool cameraPermission = true;
   FirebaseController firebaseController = FirebaseController();
   var uuid = Uuid();
-
+  bool showSavebutton = false;
   @override
   void initState() {
     super.initState();
@@ -70,13 +70,13 @@ class _AddImages extends State<AddImages> with SingleTickerProviderStateMixin {
             elevation: 0,
             backgroundColor: Colors.transparent,
             actions: [
-              Padding(
+              showSavebutton ? Padding(
                 padding: const EdgeInsets.only(top: 10, right: 20),
                 child: ElevatedButton(
                   child: Text(
                     "SAVE".tr(),
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize:14,
                     ),
                   ),
                   onPressed: !uploading
@@ -94,12 +94,13 @@ class _AddImages extends State<AddImages> with SingleTickerProviderStateMixin {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0))),
                 ),
-              ),
+              ) : SizedBox(),
             ],
             leading: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  Navigator.of(context).pop();
+                  if (!uploading)
+                    Navigator.of(context).pop();
                 },
                 child: Container(
                   child: Icon(
@@ -136,272 +137,296 @@ class _AddImages extends State<AddImages> with SingleTickerProviderStateMixin {
                   ),
                 ),
               )
-            : Container(
-                width: MediaQuery.of(context).size.width,
-                child: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Tooltip(
-                              message: "Gallery".tr(),
-                              preferBelow: false,
-                              child: InkWell(
-                                onTap: () async {
-                                  if (!uploading) {
-                                    images = await pickMutipleImages(
-                                        context: context);
-                                    if (images.isNotEmpty) {
-                                      setState(() {});
-                                    }
-                                  }
-                                } /*=> !uploading ? chooseImage(context: context) : null*/,
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: _screenWidth >= miniScreenWidth
-                                        ? 150
-                                        : 130,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: mRed,
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12.0, horizontal: 6.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.image_search,
-                                        color: Colors.white,
-                                        size: _screenWidth >= miniScreenWidth
-                                            ? 22.0
-                                            : 18,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                            maxWidth:
-                                                _screenWidth >= miniScreenWidth
-                                                    ? 130
-                                                    : 90,
-                                          ),
-                                          child: Text(
-                                            "Gallery".tr(),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: _screenWidth >=
-                                                        miniScreenWidth
-                                                    ? 18
-                                                    : 16,
-                                                color: white),
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Tooltip(
-                              message: "Camera".tr(),
-                              preferBelow: false,
-                              child: InkWell(
-                                onTap: () => !uploading
-                                    ? chooseCamera(context: context)
-                                    : null,
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: _screenWidth >= miniScreenWidth
-                                        ? 150
-                                        : 130,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: mRed,
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12.0, horizontal: 6.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.camera_alt_outlined,
-                                        color: Colors.white,
-                                        size: _screenWidth >= miniScreenWidth
-                                            ? 22.0
-                                            : 18,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                            maxWidth:
-                                                _screenWidth >= miniScreenWidth
-                                                    ? 130
-                                                    : 90,
-                                          ),
-                                          child: Text(
-                                            "Camera".tr(),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: _screenWidth >=
-                                                        miniScreenWidth
-                                                    ? 18
-                                                    : 16,
-                                                color: white),
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //       child: Tooltip(
-                        //         message: "Gallery".tr(),
-                        //         preferBelow: false,
-                        //         child: Container(
-                        //           padding:  EdgeInsets.only(left: _screenWidth >= miniScreenWidth ? 30.0 : 20.0, right: 10.0),
-                        //           child: ElevatedButton(
-                        //
-                        //             child: Row(
-                        //               children: [
-                        //                 Icon(Icons.image_search,color: Colors.white, size:_screenWidth >= miniScreenWidth ?  22.0:18,),
-                        //                 SizedBox(width: 10,),
-                        //                 Expanded(child: Text("Gallery".tr(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize:_screenWidth >= miniScreenWidth ?  18:16),)),
-                        //               ],
-                        //             ),
-                        //             onPressed: () => !uploading ? chooseImage(context: context) : null,
-                        //             style: ElevatedButton.styleFrom(
-                        //               primary: mRed,
-                        //               onPrimary:  white,
-                        //               padding: EdgeInsets.fromLTRB(
-                        //                   _screenWidth >= miniScreenWidth ? 20.0 : 15.0, 15.0, _screenWidth >= miniScreenWidth ? 20.0 : 10.0, 10.0),
-                        //               elevation: 5,
-                        //               shape: RoundedRectangleBorder(
-                        //                   borderRadius: BorderRadius.circular(20.7)
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //
-                        //     Expanded(
-                        //       child: Tooltip(
-                        //         message: "Camera".tr(),
-                        //         preferBelow: false,
-                        //         child: Container(
-                        //           padding: EdgeInsets.only(left: 10.0, right:  _screenWidth >= miniScreenWidth ? 30.0 : 20.0),
-                        //           child: ElevatedButton(
-                        //            child: Row(
-                        //              children: [
-                        //                Icon(Icons.camera_alt_outlined,color: Colors.white, size: _screenWidth >= miniScreenWidth ?22.0:18,),
-                        //                SizedBox(width: 10,),
-                        //                Expanded(child: Text("Camera".tr(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: _screenWidth >= miniScreenWidth ?  18:16),)),
-                        //              ],
-                        //            ),
-                        //             onPressed: () => !uploading ? chooseCamera(context: context) : null,
-                        //             style: ElevatedButton.styleFrom(
-                        //               primary: mRed,
-                        //               onPrimary:  white,
-                        //               padding: EdgeInsets.fromLTRB(
-                        //                   _screenWidth >= miniScreenWidth ? 20.0 : 15.0, 15.0, _screenWidth >= miniScreenWidth ? 20.0 : 10.0, 10.0),
-                        //               elevation: 5,
-                        //               shape: RoundedRectangleBorder(
-                        //                   borderRadius: BorderRadius.circular(20.7)
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),),
-                        //
-                        //   ],
-                        // ),
+            : Center(
 
-                        if (images != null)
-                          SingleChildScrollView(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 20, bottom: 20),
-                              height: 500,
-                              child: GridView.builder(
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisSpacing: 20,
-                                        mainAxisSpacing: 20,
-                                        crossAxisCount: 2,
-                                        childAspectRatio: 2 / 3),
-                                padding: const EdgeInsets.only(
-                                    left: 8.0,
-                                    top: 8.0,
-                                    right: 8.0,
-                                    bottom: 8.0),
-                                itemCount: images.length,
-                                itemBuilder: (context, j) {
-                                  List paths = [];
-                                  images.map((e) {
-                                    paths.add(e.path);
-                                  }).toList();
-/*
-                                  if(paths.length>20){
-                                    Fluttertoast.showToast( msg: "Only 20 Images aer uploded",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIosWeb: 3,
-                                        backgroundColor: Colors.blueGrey,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0);
-                                  }*/
-                                  return Container(
-                                      child: Image.file(File(paths[j]),
-                                          fit: BoxFit.cover));
-                                },
-                              ),
-                            ),
-                          )
-                        /*         Container(
-                            margin: EdgeInsets.all(20.0),
-                            width: double.infinity,
-                            height: 400,
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blueGrey,
-                                  offset: Offset(2, 2),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
+              child: Container(
+
+                  height: MediaQuery.of(context).size.height,
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Tooltip(
+                                message: "Gallery".tr(),
+                                preferBelow: false,
+                                child: InkWell(
+                                  onTap: () async {
+
+                                    print("skjfnskjdf asd");
+                                    if (!uploading) {
+                                      images = await pickMutipleImages(
+                                          context: context);
+                                      if (images.isNotEmpty) {
+                                        setState(() {
+                                          showSavebutton = true;
+                                        });
+                                      }
+                                    }
+
+                                  } /*=> !uploading ? chooseImage(context: context) : null*/,
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                      maxWidth: _screenWidth >= miniScreenWidth
+                                          ? 150
+                                          : 130,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: mRed,
+                                      borderRadius: BorderRadius.circular(100.0),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 6.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.image_search,
+                                          color: Colors.white,
+                                          size: _screenWidth >= miniScreenWidth
+                                              ? 22.0
+                                              : 18,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth:
+                                                  _screenWidth >= miniScreenWidth
+                                                      ? 130
+                                                      : 90,
+                                            ),
+                                            child: Text(
+                                              "Gallery".tr(),
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: _screenWidth >=
+                                                          miniScreenWidth
+                                                      ? 18
+                                                      : 16,
+                                                  color: white),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ],
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: Image(image: FileImage(_image), fit: BoxFit.fill),
                               ),
-                            ),
-                          ),*/
-                      ],
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Tooltip(
+                                message: "Camera".tr(),
+                                preferBelow: false,
+                                child: InkWell(
+                                  onTap: () => !uploading
+                                      ? {
+                                  print("skjfnskjdf asd"),
+                                    setState(()=> {
+                                      showSavebutton = true
+                                    }),
+                                    chooseCamera(context: context)
+                                  }
+                                      : {
+                                    print("sdjkfs df sdf sjfnk sj fnk")
+                                  },
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                      maxWidth: _screenWidth >= miniScreenWidth
+                                          ? 150
+                                          : 130,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: mRed,
+                                      borderRadius: BorderRadius.circular(100.0),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12.0, horizontal: 6.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: Colors.white,
+                                          size: _screenWidth >= miniScreenWidth
+                                              ? 22.0
+                                              : 18,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth:
+                                                  _screenWidth >= miniScreenWidth
+                                                      ? 130
+                                                      : 90,
+                                            ),
+                                            child: Text(
+                                              "Camera".tr(),
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: _screenWidth >=
+                                                          miniScreenWidth
+                                                      ? 18
+                                                      : 16,
+                                                  color: white),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //       child: Tooltip(
+                          //         message: "Gallery".tr(),
+                          //         preferBelow: false,
+                          //         child: Container(
+                          //           padding:  EdgeInsets.only(left: _screenWidth >= miniScreenWidth ? 30.0 : 20.0, right: 10.0),
+                          //           child: ElevatedButton(
+                          //
+                          //             child: Row(
+                          //               children: [
+                          //                 Icon(Icons.image_search,color: Colors.white, size:_screenWidth >= miniScreenWidth ?  22.0:18,),
+                          //                 SizedBox(width: 10,),
+                          //                 Expanded(child: Text("Gallery".tr(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize:_screenWidth >= miniScreenWidth ?  18:16),)),
+                          //               ],
+                          //             ),
+                          //             onPressed: () => !uploading ? chooseImage(context: context) : null,
+                          //             style: ElevatedButton.styleFrom(
+                          //               primary: mRed,
+                          //               onPrimary:  white,
+                          //               padding: EdgeInsets.fromLTRB(
+                          //                   _screenWidth >= miniScreenWidth ? 20.0 : 15.0, 15.0, _screenWidth >= miniScreenWidth ? 20.0 : 10.0, 10.0),
+                          //               elevation: 5,
+                          //               shape: RoundedRectangleBorder(
+                          //                   borderRadius: BorderRadius.circular(20.7)
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //
+                          //     Expanded(
+                          //       child: Tooltip(
+                          //         message: "Camera".tr(),
+                          //         preferBelow: false,
+                          //         child: Container(
+                          //           padding: EdgeInsets.only(left: 10.0, right:  _screenWidth >= miniScreenWidth ? 30.0 : 20.0),
+                          //           child: ElevatedButton(
+                          //            child: Row(
+                          //              children: [
+                          //                Icon(Icons.camera_alt_outlined,color: Colors.white, size: _screenWidth >= miniScreenWidth ?22.0:18,),
+                          //                SizedBox(width: 10,),
+                          //                Expanded(child: Text("Camera".tr(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: _screenWidth >= miniScreenWidth ?  18:16),)),
+                          //              ],
+                          //            ),
+                          //             onPressed: () => !uploading ? chooseCamera(context: context) : null,
+                          //             style: ElevatedButton.styleFrom(
+                          //               primary: mRed,
+                          //               onPrimary:  white,
+                          //               padding: EdgeInsets.fromLTRB(
+                          //                   _screenWidth >= miniScreenWidth ? 20.0 : 15.0, 15.0, _screenWidth >= miniScreenWidth ? 20.0 : 10.0, 10.0),
+                          //               elevation: 5,
+                          //               shape: RoundedRectangleBorder(
+                          //                   borderRadius: BorderRadius.circular(20.7)
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),),
+                          //
+                          //   ],
+                          // ),
+
+                          if (images != null)
+                            Container(
+                              alignment: Alignment.center,
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(top: 20, bottom: 20),
+                                  height: 500,
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisSpacing: 20,
+                                            mainAxisSpacing: 20,
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 2 / 3),
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0,
+                                        top: 8.0,
+                                        right: 8.0,
+                                        bottom: 8.0),
+                                    itemCount: images.length,
+                                    itemBuilder: (context, j) {
+                                      List paths = [];
+                                      images.map((e) {
+                                        paths.add(e.path);
+                                      }).toList();
+/*
+                                      if(paths.length>20){
+                                        Fluttertoast.showToast( msg: "Only 20 Images aer uploded",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            timeInSecForIosWeb: 3,
+                                            backgroundColor: Colors.blueGrey,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+                                      }*/
+                                      return Container(
+                                          alignment: Alignment.center,
+                                          child: Image.file(File(paths[j]),
+                                              fit: BoxFit.cover));
+                                    },
+                                  ),
+                                ),
+                              ),
+                            )
+                          /*         Container(
+                              margin: EdgeInsets.all(20.0),
+                              width: double.infinity,
+                              height: 400,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.blueGrey,
+                                    offset: Offset(2, 2),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Image(image: FileImage(_image), fit: BoxFit.fill),
+                                ),
+                              ),
+                            ),*/
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+            ),
       ),
     );
   }

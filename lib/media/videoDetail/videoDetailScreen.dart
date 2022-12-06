@@ -37,7 +37,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
     with WidgetsBindingObserver {
   // double _maxScreenWidth;
   VideoScrollPageController _pageController;
-
+  VideoPlayerController _controller;
   VideoScrollListController _videoListController;
 
   FirebaseController _firebaseController = FirebaseController();
@@ -59,6 +59,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
       try {
         _videoListController.currentPlayer.pause();
       } catch (e) {
+        print("Videoooo erroor");
         print("Video Error: $e");
       }
     super.dispose();
@@ -69,6 +70,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
     _pageController = VideoScrollPageController(initialPage: widget.videoIndex);
     _videoListController =
         VideoScrollListController(initVideoIndex: widget.videoIndex);
+
+        // _controller  = VideoPlayerController.network(
+        //   'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        // );
+
     _currentIndex = widget.videoIndex;
     WidgetsBinding.instance.addObserver(this);
     _videoListController.init(
@@ -109,7 +115,10 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
           size: 25,
         ),
         onPressed: () {
-          _videoListController.playerList[_currentIndex].controller.pause();
+          print("323423 dskdjfsdfsd s dfsdf");
+          setState(() {
+            _videoListController.playerList[_currentIndex].controller.pause();
+          });
 
           showDialog(
               context: context,
@@ -220,11 +229,16 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                                             textColor: Colors.white,
                                             fontSize: 16.0);
                                       }
-                                      Navigator.of(context).pop();
+                                      if(widget.allVideos.length !=
+                                          0) {
+                                        Navigator.of(context).pop();
+                                      }
+
                                       //API
                                     });
-                                  // Navigator.of(context).pop();
+                                   Navigator.of(context).pop();
                                 } catch (e) {
+                                  print("fgdfg d fgdfg erroor");
                                   print(e);
                                 }
                               }
@@ -312,6 +326,12 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
 
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
+    print("sdfjsidfj osidf osdjf osi jfosidj fsiof ");
+    print(_videoListController.playerList[_currentIndex].controller
+        .value.isInitialized);
+    print(_firebaseController.currentFirebaseUser.uid);
+    print(widget.userUID);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: VideoScrollScaffold(
@@ -324,13 +344,12 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
             icon: Icon(Icons.arrow_back, size: 25),
             color: Colors.blueGrey,
             onPressed: () {
+              print("dskdjfsdfsd s dfsdf");
               Navigator.of(context).pop();
             },
           ),
           actions: [
-            _videoListController.currentPlayer != null &&
-                    _videoListController.playerList[_currentIndex].controller
-                        .value.isInitialized
+            _videoListController.currentPlayer != null
                 ? _firebaseController.currentFirebaseUser.uid == widget.userUID
                     ? deleteIconButton(themeProvider)
                     : reportIconButton()
@@ -365,6 +384,22 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                     onPageChanged: (pIndex) {
 
                       setState(() {
+                        // If the video is playing, pause it.
+                        if (_videoListController
+                            .playerOfIndex(_currentIndex)
+                            .controller.value.isPlaying) {
+                          _videoListController
+                              .playerOfIndex(_currentIndex)
+                              .controller.pause();
+                        } else {
+                          // If the video is paused, play it.
+                          _videoListController
+                              .playerOfIndex(_currentIndex)
+                              .controller.play();
+                        }
+                      });
+
+                      setState(() {
                         currentVideoDetail =
                             _videoListController.playerOfIndex(pIndex).videoInfo;
                         _currentIndex = pIndex;
@@ -376,24 +411,24 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                     //direction change
                     itemCount: _videoListController.videoCount,
                     itemBuilder: (context, i) {
-                      var player = _videoListController.playerOfIndex(i);
-                      var data = player.videoInfo;
+                    //  var player = _videoListController.playerOfIndex(i);
+                      var data = _videoListController.playerOfIndex(i).videoInfo;
 
                       // video
                       Widget currentVideo = Center(
                         child: AspectRatio(
-                          aspectRatio: player.controller.value.aspectRatio,
-                          child: VideoPlayer(player.controller),
+                          aspectRatio: _videoListController.playerOfIndex(i).controller.value.aspectRatio,
+                          child: VideoPlayer(_videoListController.playerOfIndex(i).controller),
                         ),
                       );
 
                       currentVideo = VideoScrollPage(
-                        hidePauseIcon: !player.showPauseIcon.value,
+                        hidePauseIcon: !_videoListController.playerOfIndex(i).showPauseIcon.value,
                         aspectRatio: 9 / 16.0,
                         key: Key(data.videoid + '$i'),
                         tag: data.videoUrl,
                         bottomPadding: hasBottomPadding ? 16.0 : 16.0,
-                        player: player.controller,
+                        player: _videoListController.playerOfIndex(i).controller,
                         video: currentVideo,
                       );
                       //
@@ -401,8 +436,44 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                     },
                   ),
                 ),
-
-                widget.allVideos != null ?
+                (!_videoListController
+                    .playerOfIndex(_currentIndex)
+                    .controller
+                    .value
+                    .isInitialized)
+                    ? Center(
+                        child: Container(
+                          width: 70,
+                          height: 70,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.white,
+                            valueColor: AlwaysStoppedAnimation<Color>(mRed),
+                          ),
+                        ),
+                      )
+                    : Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.transparent,
+                      child: ListView(
+                        shrinkWrap: true,
+                        primary: false,
+                        scrollDirection: Axis.horizontal,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        children: [
+                          // Shimmer.fromColors(
+                          //   baseColor: Colors.black87,
+                          //   highlightColor: Colors.black38,
+                          //   direction: ShimmerDirection.ltr,
+                          //   child: Container(
+                          //     width: MediaQuery.of(context).size.width,
+                          //     height: MediaQuery.of(context).size.height,
+                          //     color: Colors.black,
+                          //   ),
+                          // ),
+                        ],
+                      )),
+                if (widget.allVideos != null)
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
@@ -426,7 +497,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                         );
                       }).toList(),
                     ),
-                  ) : SizedBox(),
+                  ),
               ],
             ),
           ),

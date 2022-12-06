@@ -270,6 +270,10 @@ class _ImageDetail extends State<ImageDetail> {
                                           fontSize: 16.0);
                                       Navigator.of(context).pop();
                                     }
+                                    if(widget.imagesModel.images.length !=
+                                        0) {
+                                      Navigator.of(context).pop();
+                                    }
 
                                     //API
                                   });
