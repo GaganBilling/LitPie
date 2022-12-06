@@ -22,6 +22,7 @@ import 'package:litpie/controller/localNotificationController.dart';
 import 'package:litpie/controller/pushNotificationController.dart';
 import 'package:litpie/controller/rewardCollectController.dart';
 import 'package:litpie/location/LocationProvider.dart';
+import 'package:litpie/provider/postProvider.dart';
 import 'package:litpie/variables.dart';
 import 'package:litpie/Registration/OTPphoneUpdate.dart';
 import 'package:litpie/Screens/WelcomeScreen.dart';
@@ -558,6 +559,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ),
         ChangeNotifierProvider(
           create: (context) => SwipeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PostProvider(),
         )
       ],
       child: Consumer2<ThemeProvider, ConnectivityProvider>(

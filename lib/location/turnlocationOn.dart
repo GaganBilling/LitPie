@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:litpie/Screens/BottomNavigation/bottomNav.dart';
 import 'package:litpie/location/LocationProvider.dart';
 import 'package:litpie/location/allowLocation.dart';
 import 'package:litpie/main.dart';
@@ -92,7 +93,13 @@ class _TurnLocationOn extends State<TurnLocationOn> {
       );
       print("turn on lacation4 ");
       setUserData(userData);
-      Navigator.of(context).pushReplacementNamed('/Home');
+     // Navigator.of(context).pushReplacementNamed('/Welcome');
+      Navigator.push(
+          context,
+          CupertinoPageRoute(
+              builder: (context) => BottomNav(
+                tabRedirectIndex: 0,
+              )));
     }
   }
 

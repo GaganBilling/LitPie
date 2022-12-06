@@ -8,6 +8,7 @@ import 'package:litpie/Screens/BottomNavigation/Home/swipe/swipe_provider.dart';
 import 'package:litpie/controller/FirebaseController.dart';
 import 'package:litpie/controller/mobileAdsController.dart';
 import 'package:litpie/controller/swipeController.dart';
+import 'package:litpie/provider/global_posts/provider/globalPostProvider.dart';
 import 'package:litpie/variables.dart';
 import 'package:location/location.dart';
 import 'package:litpie/ApiController/StoriesApiController.dart';
@@ -63,7 +64,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   MobileAdsController _mobileAdsController = MobileAdsController();
   FirebaseController _firebaseController = FirebaseController();
   String deviceToken = "";
-
+  GlobalPostProvider globalPostProvider = GlobalPostProvider();
   Map<String, dynamic> userData = {};
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -86,7 +87,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       globalSwipeController = Provider.of<SwipeProvider>(context, listen: false);
       print("checking data availablity");
+      globalPostProvider =
+          Provider.of<GlobalPostProvider>(context, listen: false);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
 
+        print("checking data availablity");
+        await globalPostProvider.getUserData();
+
+      });
       var data = await _getCurrentUser();
       if (data != null) {
         print("data available");

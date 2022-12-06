@@ -31,7 +31,7 @@ class MyPostProvider extends ChangeNotifier {
   Future getUserdata() async {
     userdata = await firebaseController.getCurrentUserData();
     if (userdata != null) {
-      getAllPosts();
+      await getAllPosts();
     }
     notifyListeners();
   }

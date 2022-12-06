@@ -877,6 +877,13 @@
             </list>
           </value>
         </entry>
+        <entry key="pull_to_refresh">
+          <value>
+            <list>
+              <option value="D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/pull_to_refresh-2.0.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="readmore">
           <value>
             <list>
@@ -1337,6 +1344,7 @@
       <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.1.2/lib" />
       <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/process-4.2.4/lib" />
       <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/provider-6.0.3/lib" />
+      <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/pull_to_refresh-2.0.0/lib" />
       <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/readmore-2.2.0/lib" />
       <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.27.5/lib" />
       <root url="file://D:/Apps/flutter/flutter_windows_2.10.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/share-2.0.4/lib" />

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,6 +26,24 @@ class GlobalPostProvider extends ChangeNotifier {
   bool isLoading = false;
   DocumentSnapshot lastDocument;
   int docLimit = 10;
+
+  List<dynamic> posts = [];
+  TextEditingController commentController = TextEditingController();
+  List<String> deviceToken = [];
+  int currentPostIndex = 0;
+  bool isCommentTapped = false;
+  bool isCommentsLoading = false;
+  bool isPostLoading = true;
+  var commentList = [];
+  PushNotificationController pushNotificationController =
+  PushNotificationController();
+  double screenWidth;
+
+  var lastValueInPostList;
+  static final FirebaseFirestore kfirestore = FirebaseFirestore.instance;
+  static final CollectionReference _postCollection =
+  kfirestore.collection(postCollectionName);
+
 
   Future deletePost(String createdBy,String docId, String commentID, int cCount,TextPostModel commentsCount) async {
 
@@ -72,71 +89,190 @@ class GlobalPostProvider extends ChangeNotifier {
   }
 
   //
-  List<dynamic> posts = [];
-  TextEditingController commentController = TextEditingController();
-  List<String> deviceToken = [];
-  int currentPostIndex = 0;
-  bool isCommentTapped = false;
-  bool isCommentsLoading = false;
-  bool isPostLoading = false;
-  var commentList = [];
-  PushNotificationController pushNotificationController =
-      PushNotificationController();
-  double screenWidth;
-
-  // double _maxScreenWidth;
-
   Future getUserData() async {
     isPostLoading = true;
     try {
       userData = await firebaseController.getCurrentUserData();
       if (userData != null) {
-        await getAllPollPostDetail();
+        await getDataFromDatabaseForListing();
+        isPostLoading = false;
       }
     } catch (e) {}
     notifyListeners();
   }
 
-  Future getAllPollPostDetail() async {
-    posts.clear();
+  Future getDataFromDatabaseForListing() async {
+
+    print("isPostLoading - ");
+    print(isPostLoading);
+
+    isPostLoading = true;
     try {
-      QuerySnapshot documentSnapshot = await FirebaseFirestore.instance
-          .collection(postCollectionName)
+      posts = [];
+      _postCollection
           .orderBy("createdAt", descending: true)
-          .get();
-      if (documentSnapshot.docs.isNotEmpty) {
-        var postList = documentSnapshot.docs
-            .where((element) =>
-                element['createdBy'] !=
-                firebaseController.firebaseAuth.currentUser.uid)
-            .toList();
-        print(postList);
-        if (postList.length > 0) {
-          postList.forEach((element) {
-            try {
-              if (element["type"] != null) {
-                if (element["type"] == "post") {
-                  posts.add(TextPostModel.fromJson(element.data()));
-                } else if (element["type"] == "poll") {
-                  posts.add(PollDataModel.fromJson(element.data()));
+          .limit(10)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        if (querySnapshot != null && querySnapshot.docs.isNotEmpty) {
+
+          var plist = querySnapshot.docs
+              .where((element) =>
+          element['createdBy'] !=
+              firebaseController.firebaseAuth.currentUser.uid)
+              .toList();
+
+          if (plist.length > 0) {
+            plist.forEach((element) {
+              try {
+                if (element["type"] != null) {
+                  if (element["type"] == "post") {
+                    posts.add(TextPostModel.fromJson(element.data()));
+                  } else if (element["type"] == "poll") {
+                    posts.add(PollDataModel.fromJson(element.data()));
+                  }
                 }
+                isPostLoading = false;
+                print(posts.length);
+                notifyListeners();
+              } catch (e) {
+                isPostLoading = false;
+                print(e.toString());
               }
-              isPostLoading = false;
-              print(posts);
-              notifyListeners();
-            } catch (e) {
-              isPostLoading = false;
-              print(e.toString());
-            }
+            });
+          }
+          print("feedlist ::::::: ");
+          //  print(feedlist[0].jobLocation);
+          /// Sort Tweet by time
+          /// It helps to display newest Tweet first.
+          posts.forEach((element) {
+            print(element.createdAt.toString());
+            print(element.createdAt.toString());
           });
+          posts.sort((x, y) => DateTime.parse(DateTime.fromMillisecondsSinceEpoch(x.createdAt * 1000).toString())
+              .compareTo(DateTime.parse(DateTime.fromMillisecondsSinceEpoch(y.createdAt * 1000).toString())));
+
+
+          lastValueInPostList =
+          querySnapshot.docs[querySnapshot.docs.length - 1];
+          isPostLoading = false;
+          notifyListeners();
         }
-      }
-    } catch (e) {
-      isPostLoading = false;
-      print(e.toString());
+      });
+      // isBusy = false;
+
+    } catch (error) {
+      print(error);
+      // isBusy = false;
+      print('error in : getDataFromDatabase 1');
     }
-    notifyListeners();
   }
+
+  Future updateFeedList() async {
+
+    try {
+      var lastValue = lastValueInPostList;
+      notifyListeners();
+      lastValue = lastValueInPostList;
+
+      _postCollection
+          .orderBy("createdAt", descending: true)
+          .startAfterDocument(lastValue)
+          .limit(8)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        if (querySnapshot != null && querySnapshot.docs.isNotEmpty) {
+          var plist = querySnapshot.docs
+              .where((element) =>
+          element['createdBy'] !=
+              firebaseController.firebaseAuth.currentUser.uid)
+              .toList();
+
+          if (plist.length > 0) {
+            plist.forEach((element) {
+              try {
+                if (element["type"] != null) {
+                  if (element["type"] == "post") {
+                    posts.add(TextPostModel.fromJson(element.data()));
+                  } else if (element["type"] == "poll") {
+                    posts.add(PollDataModel.fromJson(element.data()));
+                  }
+                }
+                isPostLoading = false;
+                print(posts.length);
+                notifyListeners();
+              } catch (e) {
+                isPostLoading = false;
+                print(e.toString());
+              }
+            });
+          }
+          print("feedlist ::::::: ");
+          //  print(feedlist[0].jobLocation);
+          /// Sort Tweet by time
+          /// It helps to display newest Tweet first.
+
+          posts.sort((x, y) => DateTime.parse(DateTime.fromMillisecondsSinceEpoch(x.createdAt * 1000).toString())
+              .compareTo(DateTime.parse(DateTime.fromMillisecondsSinceEpoch(y.createdAt * 1000).toString())));
+
+
+
+          lastValueInPostList =
+          querySnapshot.docs[querySnapshot.docs.length - 1];
+
+          notifyListeners();
+        }
+      });
+      // isBusy = false;
+
+    } catch (error) {
+      // isBusy = false;
+      print('error in : getDataFromDatabase 4');
+      print(error);
+    }
+  }
+
+
+  // Future getAllPollPostDetail() async {
+  //   posts.clear();
+  //   try {
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //         .collection(postCollectionName)
+  //         .orderBy("createdAt", descending: true)
+  //         .get();
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       var postList = querySnapshot.docs
+  //           .where((element) =>
+  //               element['createdBy'] !=
+  //               firebaseController.firebaseAuth.currentUser.uid)
+  //           .toList();
+  //       print(postList);
+  //       if (postList.length > 0) {
+  //         postList.forEach((element) {
+  //           try {
+  //             if (element["type"] != null) {
+  //               if (element["type"] == "post") {
+  //                 posts.add(TextPostModel.fromJson(element.data()));
+  //               } else if (element["type"] == "poll") {
+  //                 posts.add(PollDataModel.fromJson(element.data()));
+  //               }
+  //             }
+  //             isPostLoading = false;
+  //             print(posts);
+  //             notifyListeners();
+  //           } catch (e) {
+  //             isPostLoading = false;
+  //             print(e.toString());
+  //           }
+  //         });
+  //       }
+  //     }
+  //   } catch (e) {
+  //     isPostLoading = false;
+  //     print(e.toString());
+  //   }
+  //   notifyListeners();
+  // }
 
 //getLikedPosts
   Future<QuerySnapshot> getLikedOrNot(String postId) async {

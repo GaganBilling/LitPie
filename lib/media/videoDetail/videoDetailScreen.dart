@@ -363,11 +363,13 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                   child: VideoScrollPageView.builder(
                     key: Key('home'),
                     onPageChanged: (pIndex) {
-                      currentVideoDetail =
-                          _videoListController.playerOfIndex(pIndex).videoInfo;
-                      _currentIndex = pIndex;
-                      _videoListController.playerList[_currentIndex].controller.play();
-                      setState(() {});
+
+                      setState(() {
+                        currentVideoDetail =
+                            _videoListController.playerOfIndex(pIndex).videoInfo;
+                        _currentIndex = pIndex;
+                        _videoListController.playerList[_currentIndex].controller.play();
+                      });
                     },
                     controller: _pageController,
                     scrollDirection: Axis.horizontal,
@@ -399,49 +401,8 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                     },
                   ),
                 ),
-                if (!_videoListController
-                    .playerOfIndex(_currentIndex)
-                    .controller
-                    .value
-                    .isInitialized)
-                  Center(
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.white,
-                        valueColor: AlwaysStoppedAnimation<Color>(mRed),
-                      ),
-                    ),
-                  ),
-                if (!_videoListController
-                    .playerOfIndex(_currentIndex)
-                    .controller
-                    .value
-                    .isInitialized)
-                  Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Colors.transparent,
-                      child: ListView(
-                        shrinkWrap: true,
-                        primary: false,
-                        scrollDirection: Axis.horizontal,
-                        physics: AlwaysScrollableScrollPhysics(),
-                        children: [
-                          Shimmer.fromColors(
-                            baseColor: Colors.black87,
-                            highlightColor: Colors.black38,
-                            direction: ShimmerDirection.ltr,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      )),
-                if (widget.allVideos != null)
+
+                widget.allVideos != null ?
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
@@ -465,7 +426,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen>
                         );
                       }).toList(),
                     ),
-                  ),
+                  ) : SizedBox(),
               ],
             ),
           ),
